@@ -60,6 +60,12 @@
     <ClCompile Include="BorderShape.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EventCollector.h">
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="BorderShape.h">
       <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleEventHandler.h">
+      <Filter>Header Files\Console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

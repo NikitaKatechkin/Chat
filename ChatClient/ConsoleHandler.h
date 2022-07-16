@@ -6,7 +6,9 @@
 class ConsoleHandler
 {
 public:
-	ConsoleHandler(const bool makeActive = false);
+	ConsoleHandler(const bool makeActive);
+	ConsoleHandler();
+	ConsoleHandler(const HANDLE& handle, const bool makeActive);
 	~ConsoleHandler();
 
 	HANDLE GetWinAPIConsoleHandler();

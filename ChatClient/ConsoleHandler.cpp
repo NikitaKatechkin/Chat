@@ -45,6 +45,81 @@ ConsoleHandler::ConsoleHandler(const bool makeActive)
     }
 }
 
+ConsoleHandler::ConsoleHandler()
+{
+    m_console = CreateFile(L"CONOUT$",
+                           (GENERIC_READ | GENERIC_WRITE),
+                            0,
+                            nullptr,
+                            CREATE_NEW,
+                            FILE_ATTRIBUTE_NORMAL, 
+                            nullptr);
+
+    if (m_console == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to CreateConsoleScreenBuffer with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    if (GetConsoleScreenBufferInfo(m_console, &m_consoleBufferInfo) == FALSE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to GetConsoleScreenBufferInfo with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
+    ClearDisplay();
+}
+
+ConsoleHandler::ConsoleHandler(const HANDLE& handle, const bool makeActive)
+{
+    m_console = handle;
+
+    if (m_console == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to CreateConsoleScreenBuffer with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    if (GetConsoleScreenBufferInfo(m_console, &m_consoleBufferInfo) == FALSE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to GetConsoleScreenBufferInfo with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
+    ClearDisplay();
+
+    if (makeActive == true)
+    {
+        if (MakeConsoleActive() == FALSE)
+        {
+            std::stringstream errorMessage;
+
+            errorMessage << "Failed to SetConsoleActiveScreenBuffer with GLE = ";
+            errorMessage << GetLastError() << "." << std::endl;
+
+            throw std::exception(errorMessage.str().c_str());
+        }
+    }
+}
+
 ConsoleHandler::~ConsoleHandler()
 {
     CloseHandle(m_console);

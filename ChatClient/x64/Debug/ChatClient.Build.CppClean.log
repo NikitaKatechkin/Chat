@@ -5,8 +5,10 @@ c:\users\nikibot\source\repos\chat\chatclient\x64\debug\shape.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\frame.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\eventproctoolbox.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\eventprocessor.obj
+c:\users\nikibot\source\repos\chat\chatclient\x64\debug\eventhandler.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\eventcollector.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\consolehandler.obj
+c:\users\nikibot\source\repos\chat\chatclient\x64\debug\consoleeventhandler.obj
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\bordershape.obj
 c:\users\nikibot\source\repos\chat\x64\debug\chatclient.exe
 c:\users\nikibot\source\repos\chat\chatclient\x64\debug\chatclient.ilk

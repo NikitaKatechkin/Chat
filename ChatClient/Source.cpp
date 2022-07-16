@@ -1,10 +1,6 @@
 ﻿/**
-#ifndef MOUSE_HWHEELED
-#define MOUSE_HWHEELED 0x0008
-#endif
-
-#include "EventProcessor.h"
-#include "EventCollector.h"
+#include "ConsoleEventHandler.h"
+#include "EventHandler.h"
 
 int main()
 {
@@ -18,22 +14,15 @@ int main()
         {
             if (SetConsoleMode(std_in, (ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) == TRUE)
             {
-                std::vector<INPUT_RECORD> eventQueue;
-                std::mutex queueAccess;
 
-                HANDLE newEventFlag = CreateEvent(nullptr, TRUE, FALSE, L"NewEventOccuranceFlag");
-
-                if (newEventFlag != NULL)
-                {
-                    EventCollector collector(std_in, eventQueue, queueAccess, newEventFlag);
-                    EventProcessor processor(eventQueue, queueAccess, newEventFlag);
-                }
-                else
-                {
-                    std::cout << "Failed to create event flag." << std::endl;
-                    exit_code = -1;
-                }
+                EventHandler handler(std_in);
                 
+                while (true)
+                {
+                    handler.CatchEvent();
+                    handler.ProcessEvent();
+                }
+
                 SetConsoleMode(std_in, savedOldConsoleMode);
 
             }
@@ -54,6 +43,8 @@ int main()
         std::cout << "Failed to get console handle." << std::endl;
         exit_code = -1;
     }
+
+    std::cout << "HERE" << std::endl;
 
     return exit_code;
 }
@@ -258,11 +249,13 @@ std::wstring* createBorder(const COORD& borderSize)
 }
 **/
 
+
 #include "EventProcessor.h"
 #include "EventCollector.h"
 #include "ConsoleHandler.h"
 #include "Frame.h"
 #include "BorderShape.h"
+#include "ConsoleEventHandler.h"
 
 #include <iostream>
 #include <conio.h>
@@ -273,7 +266,23 @@ std::wstring* createBorder(const COORD& borderSize)
 
 int main()
 {
-    ConsoleHandler console(true);
+    //SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), {56, 36});
+
+    // Change the console window size:
+    SMALL_RECT windowSize = { 0, 0, 79, 49 };
+
+    SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &windowSize);
+
+    COORD c = { 80, 50 };
+
+    //Change the internal buffer size:
+    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), c);
+
+
+    SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, &c);
+
+    ConsoleHandler console;
+    ConsoleEventHandler consoleEvent(GetStdHandle(STD_INPUT_HANDLE));
 
     //Forming frame
 
@@ -309,7 +318,7 @@ int main()
 
     //Displaying frame in a loop
     
-    while (true)
+    //while (true)
     {
         console.ClearDisplay();
 
@@ -318,80 +327,13 @@ int main()
         console.DisplayBuffer();
     }
 
+    //Experiments
+
+    while (true)
+    {
+        consoleEvent.CatchEvent();
+        consoleEvent.ProcessEvent();
+    }
+
     return 0;
 }
-
-/**
-
-void writeSingleCharacter(wchar_t* buffer, const COORD& bufferSize, const COORD& insertTopLeft, const wchar_t& ch)
-{
-    buffer[insertTopLeft.Y * bufferSize.X + insertTopLeft.X] = ch;
-}
-
-void writeString(wchar_t* buffer, const COORD& bufferSize, const COORD& insertTopLeft, const std::wstring& s)
-{
-    swprintf(&buffer[insertTopLeft.Y * bufferSize.X + insertTopLeft.X],
-             s.size() + 1,
-             L"%s",
-             s.c_str());
-}
-
-std::wstring* createBorder(const COORD& borderSize)
-{
-    //Allocating reqiered memory
-    std::wstring* border = new std::wstring[borderSize.Y];
-
-    for (short i = 0; i < borderSize.Y; i++)
-    {
-        border[i].resize(borderSize.X);
-    }
-
-    //Filling first row of border
-    std::fill_n(&border[0][0], borderSize.X, L'═');
-    border[0][0] = L'╔';
-    border[0][borderSize.X - 1] = L'╗';
-
-    //Filling middle rows of border
-
-    for (short i = 1; i < (borderSize.Y - 1); i++)
-    {
-        std::fill_n(&border[i][0], borderSize.X, L' ');
-
-        border[i][0] = L'║';
-        border[i][borderSize.X - 1] = L'║';
-    }
-
-    //Filling last row of border
-
-    std::fill_n(&border[borderSize.Y - 1][0], borderSize.X, L'═');
-    border[borderSize.Y - 1][0] = L'╚';
-    border[borderSize.Y - 1][borderSize.X - 1] = L'╝';
-
-    return border;
-}
-
-wchar_t* createWcharBorder(const COORD& borderSize)
-{
-    auto borderLength = borderSize.X * borderSize.Y;
-    wchar_t* border = new wchar_t[borderLength];
-
-    std::fill_n(border, borderLength, L' ');
-
-    std::fill_n(border, borderSize.X, L'═');
-    border[0] = L'╔';
-    border[borderSize.X - 1] = L'╗';
-
-    std::fill_n(&border[(borderSize.Y - 1) * borderSize.X], borderSize.X, L'═');
-    border[(borderSize.Y - 1) * borderSize.X] = L'╚';
-    border[borderSize.Y * borderSize.X - 1] = L'╝';
-
-    
-    for (short row = 1; row < (borderSize.Y - 1); row++)
-    {
-        border[row * borderSize.X] = L'║';
-        border[(row + 1) * borderSize.X - 1] = L'║';
-    }
-
-    return border;
-}
-**/

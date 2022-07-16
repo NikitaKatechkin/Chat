@@ -1,51 +1,67 @@
-#include "EventProcessor.h"
+#include "EventHandler.h"
 
-EventProcessor::~EventProcessor()
+EventHandler::EventHandler(const HANDLE& eventSource):
+	m_eventSource(eventSource)
 {
-    if (m_isActive == true)
-    {
-        Stop();
-    }
+	m_newEventFlag = CreateEvent(nullptr, TRUE, FALSE, L"NewEventOccuranceFlag");
+
+	if (m_newEventFlag == NULL)
+	{
+		std::stringstream errorMessage;
+
+		errorMessage << "Failed to CreateEvent with GLE = ";
+		errorMessage << GetLastError() << "." << std::endl;
+
+		throw std::exception(errorMessage.str().c_str());
+	}
 }
 
-void EventProcessor::Start(std::vector<INPUT_RECORD>& eventQueue,
-                           std::mutex& queueAccess,
-                           HANDLE& newEventFlag)
+EventHandler::~EventHandler()
 {
-    m_isActive = true;
-
-    m_thread = std::thread(&EventProcessor::ProcessEventQueue,
-                            this,
-                            std::ref(eventQueue),
-                            std::ref(queueAccess),
-                            std::ref(newEventFlag));
+	if (m_newEventFlag != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(m_newEventFlag);
+		m_newEventFlag = INVALID_HANDLE_VALUE;
+	}
 }
 
-void EventProcessor::Stop()
+void EventHandler::CatchEvent(const DWORD inputBufferSize)
 {
-    m_isActive = false;
-    m_thread.join();
+	DWORD numberOccuredEvents = 0;
+	auto inputBuffer = std::shared_ptr<INPUT_RECORD[]>(new INPUT_RECORD[inputBufferSize]);
+
+	if (ReadConsoleInput(m_eventSource, inputBuffer.get(),
+		static_cast<DWORD>(inputBufferSize), &numberOccuredEvents) == TRUE)
+	{
+        std::lock_guard<std::mutex> lock(m_queueAccess);
+
+		for (DWORD i = 0; i < numberOccuredEvents; i++)
+		{
+			m_eventQueue.push_back(inputBuffer[i]);
+		}
+
+		//SetEvent(m_newEventFlag);
+	}
 }
 
-void EventProcessor::ProcessEventQueue(std::vector<INPUT_RECORD>& eventQueue,
-                                       std::mutex& queueAccess, 
-                                       HANDLE& newEventFlag)
+void EventHandler::ProcessEvent()
 {
-    while (true)
-    {
-        if (WaitForSingleObject(newEventFlag, INFINITE) == WAIT_OBJECT_0)
+	//if (WaitForSingleObject(m_newEventFlag, INFINITE) == WAIT_OBJECT_0)
+	//{
+		std::lock_guard<std::mutex> lock(m_queueAccess);
+
+        for (size_t i = 0; i < m_eventQueue.size(); i++)
         {
-            std::lock_guard<std::mutex> lock(queueAccess);
-
-            EventProc(eventQueue.front());
-            eventQueue.erase(eventQueue.begin());
-
-            (eventQueue.empty() == true) ? ResetEvent(newEventFlag) : SetEvent(newEventFlag);
+            EventProc(m_eventQueue.front());
+            m_eventQueue.erase(m_eventQueue.begin());
         }
-    }
+
+		//(m_eventQueue.empty() == true) ? ResetEvent(m_newEventFlag) : 
+		//								 SetEvent(m_newEventFlag);
+	//}
 }
 
-void EventProcessor::EventProc(INPUT_RECORD& inputEvent)
+void EventHandler::EventProc(INPUT_RECORD& inputEvent)
 {
     switch (inputEvent.EventType)
     {
@@ -70,7 +86,7 @@ void EventProcessor::EventProc(INPUT_RECORD& inputEvent)
     }
 }
 
-void EventProcessor::KeyEventProc(KEY_EVENT_RECORD& ker)
+void EventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
 {
     std::cout << "Key event: ";
 
@@ -84,14 +100,14 @@ void EventProcessor::KeyEventProc(KEY_EVENT_RECORD& ker)
     }
 }
 
-void EventProcessor::ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD& wbsr)
+void EventHandler::ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD& wbsr)
 {
     std::cout << "Resize event occured." << std::endl;
     std::cout << "Columns = " << wbsr.dwSize.X << "; ";
     std::cout << "Rows = " << wbsr.dwSize.Y << ";" << std::endl;
 }
 
-void EventProcessor::MouseEventProc(MOUSE_EVENT_RECORD& mer)
+void EventHandler::MouseEventProc(MOUSE_EVENT_RECORD& mer)
 {
     std::cout << "Mouse event: ";
 
@@ -129,11 +145,11 @@ void EventProcessor::MouseEventProc(MOUSE_EVENT_RECORD& mer)
     }
 }
 
-void EventProcessor::FocusEventProc(FOCUS_EVENT_RECORD& fer)
+void EventHandler::FocusEventProc(FOCUS_EVENT_RECORD& fer)
 {
     std::cout << "Focus: switched." << std::endl;
 }
 
-void EventProcessor::MenuEventProc(MENU_EVENT_RECORD& mer)
+void EventHandler::MenuEventProc(MENU_EVENT_RECORD& mer)
 {
 }

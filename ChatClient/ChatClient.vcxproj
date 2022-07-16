@@ -159,8 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BorderShape.cpp" />
+    <ClCompile Include="ConsoleEventHandler.cpp" />
     <ClCompile Include="ConsoleHandler.cpp" />
     <ClCompile Include="EventCollector.cpp" />
+    <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="EventProcessor.cpp" />
     <ClCompile Include="EventProcToolbox.cpp" />
     <ClCompile Include="Frame.cpp" />
@@ -169,8 +171,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BorderShape.h" />
+    <ClInclude Include="ConsoleEventHandler.h" />
     <ClInclude Include="ConsoleHandler.h" />
     <ClInclude Include="EventCollector.h" />
+    <ClInclude Include="EventHandler.h" />
     <ClInclude Include="EventProcessor.h" />
     <ClInclude Include="EventProcToolbox.h" />
     <ClInclude Include="Frame.h" />

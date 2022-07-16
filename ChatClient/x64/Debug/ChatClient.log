@@ -1,6 +1,8 @@
 ﻿  BorderShape.cpp
+  ConsoleEventHandler.cpp
   ConsoleHandler.cpp
   EventCollector.cpp
+  EventHandler.cpp
   EventProcessor.cpp
   EventProcToolbox.cpp
   Frame.cpp
