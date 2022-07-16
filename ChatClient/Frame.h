@@ -9,6 +9,9 @@ public:
 	Frame(const COORD& frameSize);
 	~Frame();
 
+	Frame(const Frame& other);
+	Frame& operator=(const Frame& other);
+public:
 	COORD GetFrameSize();
 	wchar_t* GetFrameBuffer();
 

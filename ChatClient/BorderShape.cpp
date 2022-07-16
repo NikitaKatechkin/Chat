@@ -18,7 +18,10 @@ BorderShape& BorderShape::operator=(const BorderShape& other)
         return *this;
     }
 
-    delete[] this->m_buffer;
+    if (this->m_buffer != nullptr)
+    {
+        delete[] this->m_buffer;
+    }
 
     this->m_size = other.m_size;
     this->m_buffer = new wchar_t[m_size.X * m_size.Y];

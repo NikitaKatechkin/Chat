@@ -264,28 +264,18 @@ std::wstring* createBorder(const COORD& borderSize)
 #include <algorithm>
 #include <memory>
 
+Frame CreateMainScreen(const COORD& frameSize);
+
 int main()
 {
-    //SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), {56, 36});
-
-    // Change the console window size:
-    SMALL_RECT windowSize = { 0, 0, 79, 49 };
-
-    SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &windowSize);
-
-    COORD c = { 80, 50 };
-
-    //Change the internal buffer size:
-    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), c);
-
-
-    SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, &c);
-
     ConsoleHandler console;
-    ConsoleEventHandler consoleEvent(GetStdHandle(STD_INPUT_HANDLE));
+    ConsoleEventHandler consoleEvent(console.GetWinAPIConsoleInputHandler());
 
     //Forming frame
 
+    auto mainFrame = CreateMainScreen(console.GetConsoleSize());
+
+    /**
     Frame frame(console.GetConsoleSize());
 
     COORD offset{ 0, 0 };
@@ -315,6 +305,7 @@ int main()
     frame.PasteShape(text.c_str(),
                      COORD{ static_cast<short>(text.length()), 1 },
                      COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+    **/
 
     //Displaying frame in a loop
     
@@ -322,9 +313,20 @@ int main()
     {
         console.ClearDisplay();
 
-        console.UpdateScreenBuffer(frame.GetFrameBuffer(), frame.GetFrameSize());
+        console.UpdateDisplay(mainFrame.GetFrameBuffer(), mainFrame.GetFrameSize());
 
-        console.DisplayBuffer();
+        console.DrawDisplay();
+    }
+
+    console.SetConsoleSize(COORD{40, 25});
+    mainFrame = CreateMainScreen(console.GetConsoleSize());
+
+    {
+        console.ClearDisplay();
+
+        console.UpdateDisplay(mainFrame.GetFrameBuffer(), mainFrame.GetFrameSize());
+
+        console.DrawDisplay();
     }
 
     //Experiments
@@ -336,4 +338,39 @@ int main()
     }
 
     return 0;
+}
+
+Frame CreateMainScreen(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    COORD offset{ 0, 0 };
+    BorderShape border(COORD{ frameSize.X, 6 });
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X,
+                                static_cast<short>(frameSize.Y - border.GetSize().Y * 2) });
+    text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X, 6 });
+    text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    return frame;
 }

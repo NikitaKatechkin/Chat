@@ -6,6 +6,34 @@ Frame::Frame(const COORD& frameSize):
 	ClearFrame();
 }
 
+Frame::Frame(const Frame& other):
+	Frame(other.m_size)
+{
+	memcpy_s(m_frame, m_size.X * m_size.Y * sizeof(wchar_t), 
+			 other.m_frame, m_size.X * m_size.Y * sizeof(wchar_t));
+}
+
+Frame& Frame::operator=(const Frame& other)
+{
+	if (this == &other)
+	{
+		return *this;
+	}
+
+	if (this->m_frame != nullptr)
+	{
+		delete[] this->m_frame;
+	}
+
+	this->m_size = other.m_size;
+	this->m_frame = new wchar_t[m_size.X * m_size.Y];
+
+	memcpy_s(m_frame, m_size.X * m_size.Y * sizeof(wchar_t),
+			 other.m_frame, m_size.X * m_size.Y * sizeof(wchar_t));
+
+	return *this;
+}
+
 Frame::~Frame()
 {
 	delete[] m_frame;
