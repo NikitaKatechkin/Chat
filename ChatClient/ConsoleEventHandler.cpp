@@ -20,6 +20,26 @@ ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource):
 {
 }
 
+ConsoleEventHandler::ConsoleEventHandler(const ConsoleEventHandler& other):
+    EventHandler(other)
+{
+}
+
+ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+
+    this->m_eventQueue = other.m_eventQueue;
+    this->m_newEventFlag = CreateEvent(nullptr, TRUE, FALSE, L"NewEventOccuranceFlag");
+    this->m_eventSource = other.m_eventSource;
+
+    return *this;
+}
+
 void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
 {
     if (ker.bKeyDown)

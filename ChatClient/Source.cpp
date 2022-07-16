@@ -269,43 +269,10 @@ Frame CreateMainScreen(const COORD& frameSize);
 int main()
 {
     ConsoleHandler console;
-    ConsoleEventHandler consoleEvent(console.GetWinAPIConsoleInputHandler());
 
     //Forming frame
 
     auto mainFrame = CreateMainScreen(console.GetConsoleSize());
-
-    /**
-    Frame frame(console.GetConsoleSize());
-
-    COORD offset{ 0, 0 };
-    BorderShape border(COORD { console.GetConsoleSize().X, 6 } );
-    std::wstring text = L"PROGRAMM INFO ZONE HERE";
-
-    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
-    frame.PasteShape(text.c_str(),
-                     COORD{ static_cast<short>(text.length()), 1 }, 
-                     COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
-
-    offset.Y += border.GetSize().Y;
-    border = BorderShape(COORD{ border.GetSize().X, 
-                                static_cast<short>(console.GetConsoleSize().Y - border.GetSize().Y * 2)});
-    text = L"LIVE CHAT INFO ZONE HERE";
-
-    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
-    frame.PasteShape(text.c_str(),
-                     COORD{ static_cast<short>(text.length()), 1 },
-                     COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
-
-    offset.Y += border.GetSize().Y;
-    border = BorderShape(COORD{ border.GetSize().X, 6 });
-    text = L"INPUT ZONE HERE";
-
-    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
-    frame.PasteShape(text.c_str(),
-                     COORD{ static_cast<short>(text.length()), 1 },
-                     COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
-    **/
 
     //Displaying frame in a loop
     
@@ -329,13 +296,16 @@ int main()
         console.DrawDisplay();
     }
 
-    //Experiments
+    HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
 
-    while (true)
+    if (waitEvent != NULL)
     {
-        consoleEvent.CatchEvent();
-        consoleEvent.ProcessEvent();
+        WaitForSingleObject(waitEvent, INFINITE);
+        CloseHandle(waitEvent);
     }
+    
+
+    std::cout << "All successfully stopped." << std::endl;
 
     return 0;
 }
@@ -345,7 +315,7 @@ Frame CreateMainScreen(const COORD& frameSize)
     Frame frame(frameSize);
 
     COORD offset{ 0, 0 };
-    BorderShape border(COORD{ frameSize.X, 6 });
+    BorderShape border(COORD{ frameSize.X, 10 });
     std::wstring text = L"PROGRAMM INFO ZONE HERE";
 
     frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
@@ -364,7 +334,7 @@ Frame CreateMainScreen(const COORD& frameSize)
         COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
 
     offset.Y += border.GetSize().Y;
-    border = BorderShape(COORD{ border.GetSize().X, 6 });
+    border = BorderShape(COORD{ border.GetSize().X, 10 });
     text = L"INPUT ZONE HERE";
 
     frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);

@@ -5,7 +5,11 @@
 class ConsoleEventHandler final : public EventHandler
 {
 public:
+	ConsoleEventHandler() = default;
 	ConsoleEventHandler(const HANDLE& eventSource);
+	ConsoleEventHandler(const ConsoleEventHandler& other);
+	ConsoleEventHandler& operator=(const ConsoleEventHandler& other);
+
 	~ConsoleEventHandler() = default;
 protected:
 	virtual void KeyEventProc(KEY_EVENT_RECORD& ker) override;

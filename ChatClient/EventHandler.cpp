@@ -16,6 +16,27 @@ EventHandler::EventHandler(const HANDLE& eventSource):
 	}
 }
 
+EventHandler::EventHandler(const EventHandler& other):
+    EventHandler(other.m_eventSource)
+{
+    m_eventQueue = other.m_eventQueue;
+}
+
+EventHandler& EventHandler::operator=(const EventHandler& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+
+    this->m_eventQueue = other.m_eventQueue;
+    this->m_newEventFlag = CreateEvent(nullptr, TRUE, FALSE, L"NewEventOccuranceFlag");
+    this->m_eventSource = other.m_eventSource;
+
+    return *this;
+}
+
 EventHandler::~EventHandler()
 {
 	if (m_newEventFlag != INVALID_HANDLE_VALUE)

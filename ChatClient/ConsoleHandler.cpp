@@ -113,12 +113,17 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize)
 
         throw std::exception(errorMessage.str().c_str());
     }
+
+    m_eventHandler = ConsoleEventHandler(m_consoleInput);
+    m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, 
+                                        this);
 }
 
 ConsoleHandler::~ConsoleHandler()
 {
     CloseHandle(m_consoleOutput);
     delete[] m_consoleScreen;
+    StopEventHandling();
 }
 
 HANDLE ConsoleHandler::GetWinAPIConsoleInputHandler()
@@ -244,4 +249,24 @@ BOOL ConsoleHandler::SetConsoleSize(const COORD& consoleSize)
     }
 
     return result;
+}
+
+void ConsoleHandler::StartEventHandling()
+{
+    m_isEventHandlingOn = true;
+
+    while (m_isEventHandlingOn == true)
+    {
+        m_eventHandler.CatchEvent();
+        m_eventHandler.ProcessEvent();
+    }
+}
+
+void ConsoleHandler::StopEventHandling()
+{
+    m_isEventHandlingOn = false;
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    m_eventHandlingThread.join();
 }

@@ -7,7 +7,11 @@
 class EventHandler
 {
 public:
+	EventHandler() = default;
 	EventHandler(const HANDLE& eventSource);
+	EventHandler(const EventHandler& other);
+	EventHandler& operator=(const EventHandler& other);
+
 	virtual ~EventHandler();
 
 public:
