@@ -1,22 +1,7 @@
 #include "ConsoleEventHandler.h"
 
-COORD GetCursorPosition() 
-{
-    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-    GetConsoleScreenBufferInfo(h, &bufferInfo);
-    return bufferInfo.dwCursorPosition;
-}
-
-void SetCursorPosition(int XPos, int YPos) 
-{
-    COORD coord;
-    coord.X = XPos; coord.Y = YPos;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource):
-	EventHandler(eventSource)
+ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource):
+	EventHandler(eventSource, outputEventSource)
 {
 }
 
@@ -34,8 +19,8 @@ ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& o
 
 
     this->m_eventQueue = other.m_eventQueue;
-    this->m_newEventFlag = CreateEvent(nullptr, TRUE, FALSE, L"NewEventOccuranceFlag");
     this->m_eventSource = other.m_eventSource;
+    this->m_outputEventSource = other.m_outputEventSource;
 
     return *this;
 }
@@ -44,10 +29,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
 {
     if (ker.bKeyDown)
     {
-        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo);
-
-        auto cursorPos = bufferInfo.dwCursorPosition;
+        auto cursorPos = GetCursorPosition();
 
         COORD offset;
         switch (ker.wVirtualKeyCode)
@@ -55,8 +37,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         case VK_LEFT:
             offset = COORD{ -1, 0 };
 
-            SetConsoleCursorPosition(
-                GetStdHandle(STD_OUTPUT_HANDLE),
+            SetCursorPosition(
                 COORD{ static_cast<short>(cursorPos.X + offset.X),
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
@@ -64,8 +45,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         case VK_RIGHT:
             offset = COORD{ 1, 0 };
 
-            SetConsoleCursorPosition(
-                GetStdHandle(STD_OUTPUT_HANDLE),
+            SetCursorPosition(
                 COORD{ static_cast<short>(cursorPos.X + offset.X),
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
@@ -73,8 +53,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         case VK_UP:
             offset = COORD{ 0, -1 };
 
-            SetConsoleCursorPosition(
-                GetStdHandle(STD_OUTPUT_HANDLE),
+            SetCursorPosition(
                 COORD{ static_cast<short>(cursorPos.X + offset.X),
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
@@ -82,8 +61,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         case VK_DOWN:
             offset = COORD{ 0, 1 };
 
-            SetConsoleCursorPosition(
-                GetStdHandle(STD_OUTPUT_HANDLE),
+            SetCursorPosition(
                 COORD{ static_cast<short>(cursorPos.X + offset.X),
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
@@ -112,4 +90,17 @@ void ConsoleEventHandler::FocusEventProc(FOCUS_EVENT_RECORD& fer)
 
 void ConsoleEventHandler::MenuEventProc(MENU_EVENT_RECORD& mer)
 {
+}
+
+COORD ConsoleEventHandler::GetCursorPosition()
+{
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+    GetConsoleScreenBufferInfo(m_outputEventSource, &bufferInfo);
+
+    return bufferInfo.dwCursorPosition;
+}
+
+void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
+{
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), newPos);
 }

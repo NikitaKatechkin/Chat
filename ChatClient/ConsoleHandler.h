@@ -34,9 +34,13 @@ private:
 	wchar_t* m_consoleScreen = nullptr;
 	CONSOLE_SCREEN_BUFFER_INFO m_consoleBufferInfo;
 
+private:
 	ConsoleEventHandler m_eventHandler;
 	bool m_isEventHandlingOn = false;
 	std::thread m_eventHandlingThread;
+
+	void StartEventHandling();
+	void StopEventHandling();
 
 private:
 	BOOL Write(const wchar_t* bufferToWrite,
@@ -44,6 +48,4 @@ private:
 			   const COORD& insertionTopLeft,
 			   DWORD& bytesWritten);
 
-	void StartEventHandling();
-	void StopEventHandling();
 };

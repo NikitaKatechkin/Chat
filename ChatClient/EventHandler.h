@@ -8,11 +8,13 @@ class EventHandler
 {
 public:
 	EventHandler() = default;
-	EventHandler(const HANDLE& eventSource);
+	virtual ~EventHandler() = default;
+	
+public:
+	EventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource);
 	EventHandler(const EventHandler& other);
 	EventHandler& operator=(const EventHandler& other);
 
-	virtual ~EventHandler();
 
 public:
 	void CatchEvent(const DWORD inputBufferSize = 12);
@@ -21,8 +23,9 @@ public:
 protected:
 	std::vector<INPUT_RECORD> m_eventQueue;
 	std::mutex m_queueAccess;
-	HANDLE m_newEventFlag = INVALID_HANDLE_VALUE;
+	//HANDLE m_newEventFlag = INVALID_HANDLE_VALUE; DEPRICATED
 	HANDLE m_eventSource = INVALID_HANDLE_VALUE;
+	HANDLE m_outputEventSource = INVALID_HANDLE_VALUE;
 
 protected:
 	virtual void EventProc(INPUT_RECORD& inputEvent);

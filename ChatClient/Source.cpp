@@ -303,9 +303,6 @@ int main()
         WaitForSingleObject(waitEvent, INFINITE);
         CloseHandle(waitEvent);
     }
-    
-
-    std::cout << "All successfully stopped." << std::endl;
 
     return 0;
 }
