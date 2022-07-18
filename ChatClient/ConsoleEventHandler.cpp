@@ -1,13 +1,18 @@
 #include "ConsoleEventHandler.h"
 
-ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource):
-	EventHandler(eventSource, outputEventSource)
+ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource, 
+                                         wchar_t* consoleBuffer, const COORD& consoleBufferSize):
+	EventHandler(eventSource, outputEventSource), 
+    m_consoleBuffer(consoleBuffer), m_consoleBufferSize(consoleBufferSize)
 {
+    
 }
 
 ConsoleEventHandler::ConsoleEventHandler(const ConsoleEventHandler& other):
     EventHandler(other)
 {
+    this->m_consoleBuffer = other.m_consoleBuffer;
+    this->m_consoleBufferSize = other.m_consoleBufferSize;
 }
 
 ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& other)
@@ -21,8 +26,35 @@ ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& o
     this->m_eventQueue = other.m_eventQueue;
     this->m_eventSource = other.m_eventSource;
     this->m_outputEventSource = other.m_outputEventSource;
+    this->m_consoleBuffer = other.m_consoleBuffer;
+    this->m_consoleBufferSize = other.m_consoleBufferSize;
 
     return *this;
+}
+
+void ConsoleEventHandler::EventProc(INPUT_RECORD& inputEvent)
+{
+    switch (inputEvent.EventType)
+    {
+    case KEY_EVENT:
+        KeyEventProc(inputEvent.Event.KeyEvent);
+        break;
+    case MOUSE_EVENT:
+        MouseEventProc(inputEvent.Event.MouseEvent);
+        break;
+    case WINDOW_BUFFER_SIZE_EVENT:
+        ResizeEventProc(inputEvent.Event.WindowBufferSizeEvent);
+        break;
+    case FOCUS_EVENT:
+        FocusEventProc(inputEvent.Event.FocusEvent);
+        break;
+    case MENU_EVENT:
+        MenuEventProc(inputEvent.Event.MenuEvent);
+        break;
+    default:
+        std::cout << "Unknown event type occured." << std::endl;
+        break;
+    }
 }
 
 void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
@@ -66,6 +98,19 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
+        case VK_BACK:
+            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L' ';
+
+            offset = COORD{ -1, 0 };
+            SetCursorPosition(
+                COORD{ static_cast<short>(cursorPos.X + offset.X),
+                       static_cast<short>(cursorPos.Y + offset.Y) });
+
+            break;
+        case 0x41:
+            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L'A';
+
+            break;
         default:
             break;
         }
@@ -103,4 +148,35 @@ COORD ConsoleEventHandler::GetCursorPosition()
 void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
 {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), newPos);
+}
+
+void ConsoleEventHandler::SetConsoleBuffer(wchar_t* buffer)
+{
+    m_consoleBuffer = buffer;
+}
+
+void ConsoleEventHandler::SetConsoleBufferSize(const COORD& bufferSize)
+{
+    m_consoleBufferSize = bufferSize;
+}
+
+BOOL ConsoleEventHandler::WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(m_outputEventSource, &csbi);
+
+    if ((csbi.dwSize.X != bufferSize.X) || (csbi.dwSize.Y != bufferSize.Y))
+    {
+        return FALSE;
+    }
+
+    DWORD bytesWritten = 0;
+
+    BOOL result = WriteConsoleOutputCharacter(m_outputEventSource,
+                                              bufferToWrite,
+                                              bufferSize.X * bufferSize.Y,
+                                              COORD {0, 0},
+                                              &bytesWritten);
+
+    return result;
 }

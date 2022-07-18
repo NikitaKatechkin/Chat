@@ -114,7 +114,8 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize)
         throw std::exception(errorMessage.str().c_str());
     }
 
-    m_eventHandler = ConsoleEventHandler(m_consoleInput, m_consoleOutput);
+    m_eventHandler = ConsoleEventHandler(m_consoleInput, m_consoleOutput, 
+                                         m_consoleScreen, m_consoleBufferInfo.dwSize);
     m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, 
                                         this);
 }
@@ -123,7 +124,11 @@ ConsoleHandler::~ConsoleHandler()
 {
     //CloseHandle(m_consoleOutput);
     //CloseHandle(m_consoleInput);
-    delete[] m_consoleScreen;
+    if (m_consoleScreen != nullptr)
+    {
+        delete[] m_consoleScreen;
+        m_consoleScreen = nullptr;
+    }
 
     StopEventHandling();
     m_eventHandlingThread.join();
@@ -210,6 +215,9 @@ BOOL ConsoleHandler::Update()
     {
         delete[] m_consoleScreen;
         m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
+
+        m_eventHandler.SetConsoleBuffer(m_consoleScreen);
+        m_eventHandler.SetConsoleBufferSize(m_consoleBufferInfo.dwSize);
 
         ClearDisplay();
     }

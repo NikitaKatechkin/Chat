@@ -15,7 +15,6 @@ public:
 	EventHandler(const EventHandler& other);
 	EventHandler& operator=(const EventHandler& other);
 
-
 public:
 	void CatchEvent(const DWORD inputBufferSize = 12);
 	void ProcessEvent();
