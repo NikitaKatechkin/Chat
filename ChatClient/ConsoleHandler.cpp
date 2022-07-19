@@ -117,8 +117,7 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
 
     m_eventHandler = ConsoleEventHandler(m_consoleInput, 
                                          m_consoleOutput, 
-                                         m_consoleScreen.GetFrameBuffer(), 
-                                         m_consoleScreen.GetFrameSize());
+                                         &m_consoleScreen);
     m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, 
                                         this);
 }
@@ -216,9 +215,8 @@ BOOL ConsoleHandler::Update()
 
         m_consoleScreen = Frame(m_consoleBufferInfo.dwSize);
 
-        m_eventHandler.SetConsoleBuffer(m_consoleScreen.GetFrameBuffer());
-        m_eventHandler.SetConsoleBufferSize(m_consoleScreen.GetFrameSize());
-
+        m_eventHandler.SetConsoleFrame(&m_consoleScreen);
+;
         ClearDisplay();
     }
 

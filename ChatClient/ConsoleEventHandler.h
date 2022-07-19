@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EventHandler.h"
+#include "Frame.h"
 
 class ConsoleEventHandler final : public EventHandler
 {
@@ -9,8 +10,9 @@ public:
 	virtual ~ConsoleEventHandler() = default;
 
 public:
-	ConsoleEventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource, 
-						wchar_t* consoleBuffer, const COORD& consoleBufferSize);
+	ConsoleEventHandler(const HANDLE& eventSource, 
+						const HANDLE& outputEventSource, 
+						Frame* consoleFrame);
 	ConsoleEventHandler(const ConsoleEventHandler& other);
 	ConsoleEventHandler& operator=(const ConsoleEventHandler& other);
 
@@ -32,11 +34,9 @@ protected:
 	void SetCursorPosition(const COORD& newPos);
 
 protected:
-	wchar_t* m_consoleBuffer = nullptr;
-	COORD m_consoleBufferSize = COORD{0, 0};
+	Frame* m_consoleFrame;
 
 	BOOL WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize);
 public:
-	void SetConsoleBuffer(wchar_t* buffer);
-	void SetConsoleBufferSize(const COORD& bufferSize);
+	void SetConsoleFrame(Frame* consoleFrame);
 };

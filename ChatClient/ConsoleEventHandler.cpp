@@ -1,9 +1,9 @@
 #include "ConsoleEventHandler.h"
 
-ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource, 
-                                         wchar_t* consoleBuffer, const COORD& consoleBufferSize):
-	EventHandler(eventSource, outputEventSource), 
-    m_consoleBuffer(consoleBuffer), m_consoleBufferSize(consoleBufferSize)
+ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, 
+                                         const HANDLE& outputEventSource, 
+                                         Frame* consoleFrame):
+	EventHandler(eventSource, outputEventSource), m_consoleFrame(consoleFrame)
 {
     
 }
@@ -11,8 +11,7 @@ ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, const HANDLE
 ConsoleEventHandler::ConsoleEventHandler(const ConsoleEventHandler& other):
     EventHandler(other)
 {
-    this->m_consoleBuffer = other.m_consoleBuffer;
-    this->m_consoleBufferSize = other.m_consoleBufferSize;
+    this->m_consoleFrame = other.m_consoleFrame;
 }
 
 ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& other)
@@ -26,8 +25,7 @@ ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& o
     this->m_eventQueue = other.m_eventQueue;
     this->m_eventSource = other.m_eventSource;
     this->m_outputEventSource = other.m_outputEventSource;
-    this->m_consoleBuffer = other.m_consoleBuffer;
-    this->m_consoleBufferSize = other.m_consoleBufferSize;
+    this->m_consoleFrame = other.m_consoleFrame;
 
     return *this;
 }
@@ -99,7 +97,9 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
 
             break;
         case VK_BACK:
-            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L' ';
+        {
+            std::wstring charToType = { L' ' };
+            m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
 
             offset = COORD{ -1, 0 };
             SetCursorPosition(
@@ -107,8 +107,11 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
+        }
         case VK_SPACE:
-            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L' ';
+        {
+            std::wstring charToType = { L' ' };
+            m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
 
             offset = COORD{ 1, 0 };
             SetCursorPosition(
@@ -116,19 +119,22 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
+        }
         default:
+        {
             if ((ker.wVirtualKeyCode >= 0x41) && (ker.wVirtualKeyCode <= 0x5A))
             {
-                m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = 
-                    static_cast<wchar_t>(ker.wVirtualKeyCode);
+                std::wstring charToType = { static_cast<wchar_t>(ker.wVirtualKeyCode) };
+                m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
+
+                offset = COORD{ 1, 0 };
+                SetCursorPosition(
+                    COORD{ static_cast<short>(cursorPos.X + offset.X),
+                           static_cast<short>(cursorPos.Y + offset.Y) });
             }
 
-            offset = COORD{ 1, 0 };
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
-
             break;
+        }
         }
     }
     else
@@ -166,16 +172,6 @@ void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), newPos);
 }
 
-void ConsoleEventHandler::SetConsoleBuffer(wchar_t* buffer)
-{
-    m_consoleBuffer = buffer;
-}
-
-void ConsoleEventHandler::SetConsoleBufferSize(const COORD& bufferSize)
-{
-    m_consoleBufferSize = bufferSize;
-}
-
 BOOL ConsoleEventHandler::WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize)
 {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -195,4 +191,9 @@ BOOL ConsoleEventHandler::WriteToOutputHandle(wchar_t* bufferToWrite, const COOR
                                               &bytesWritten);
 
     return result;
+}
+
+void ConsoleEventHandler::SetConsoleFrame(Frame* consoleFrame)
+{
+    m_consoleFrame = consoleFrame;
 }
