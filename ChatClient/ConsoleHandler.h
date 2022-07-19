@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConsoleEventHandler.h"
+#include "Frame.h"
 
 #include <windows.h>
 #include <sstream>
@@ -31,7 +32,8 @@ private:
 	HANDLE m_consoleOutput = INVALID_HANDLE_VALUE;
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;
 
-	wchar_t* m_consoleScreen = nullptr;
+	//wchar_t* m_consoleScreen = nullptr;
+	Frame m_consoleScreen;
 	CONSOLE_SCREEN_BUFFER_INFO m_consoleBufferInfo;
 
 private:

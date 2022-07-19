@@ -1,2 +1,12 @@
-﻿  ConsoleEventHandler.cpp
+﻿  BorderShape.cpp
+  ConsoleEventHandler.cpp
+  ConsoleHandler.cpp
+  EventCollector.cpp
+  EventHandler.cpp
+  EventProcessor.cpp
+  EventProcToolbox.cpp
+  Frame.cpp
+  Shape.cpp
+  Source.cpp
+  Generating Code...
   ChatClient.vcxproj -> C:\Users\NikiBot\source\repos\Chat\x64\Debug\ChatClient.exe
