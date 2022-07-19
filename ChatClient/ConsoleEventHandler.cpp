@@ -107,11 +107,27 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                        static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
-        case 0x41:
-            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L'A';
+        case VK_SPACE:
+            m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = L' ';
+
+            offset = COORD{ 1, 0 };
+            SetCursorPosition(
+                COORD{ static_cast<short>(cursorPos.X + offset.X),
+                       static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         default:
+            if ((ker.wVirtualKeyCode >= 0x41) && (ker.wVirtualKeyCode <= 0x5A))
+            {
+                m_consoleBuffer[cursorPos.Y * m_consoleBufferSize.X + cursorPos.X] = 
+                    static_cast<wchar_t>(ker.wVirtualKeyCode);
+            }
+
+            offset = COORD{ 1, 0 };
+            SetCursorPosition(
+                COORD{ static_cast<short>(cursorPos.X + offset.X),
+                       static_cast<short>(cursorPos.Y + offset.Y) });
+
             break;
         }
     }
