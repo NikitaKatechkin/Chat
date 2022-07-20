@@ -276,7 +276,6 @@ int main()
 
     //Displaying frame in a loop
     
-    //while (true)
     {
         console.ClearDisplay();
 
@@ -288,7 +287,6 @@ int main()
     console.SetConsoleSize(COORD{40, 25});
     mainFrame = CreateMainScreen(console.GetConsoleSize());
 
-    //while (true)
     {
         console.ClearDisplay();
 
@@ -297,12 +295,6 @@ int main()
         console.DrawDisplay();
     }
 
-    while (true)
-    {
-        console.DrawDisplay();
-    }
-
-    /**
     HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
 
     if (waitEvent != NULL)
@@ -310,7 +302,6 @@ int main()
         WaitForSingleObject(waitEvent, INFINITE);
         CloseHandle(waitEvent);
     }
-    **/
 
     return 0;
 }

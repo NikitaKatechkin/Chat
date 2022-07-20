@@ -136,6 +136,8 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
             break;
         }
         }
+
+        WriteToOutputHandle(m_consoleFrame->GetFrameBuffer(), m_consoleFrame->GetFrameSize());
     }
     else
     {

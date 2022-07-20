@@ -1,64 +1,8 @@
 #include "ConsoleHandler.h"
 
-/**
-ConsoleHandler::ConsoleHandler(const bool makeActive)
-{
-	m_consoleOutput = CreateConsoleScreenBuffer((GENERIC_READ | GENERIC_WRITE),
-                                          0,
-                                          nullptr,
-                                          CONSOLE_TEXTMODE_BUFFER,
-                                          nullptr);
-
-    if (m_consoleOutput == INVALID_HANDLE_VALUE)
-    {
-        std::stringstream errorMessage;
-
-        errorMessage << "Failed to CreateConsoleScreenBuffer with GLE = ";
-        errorMessage << GetLastError() << "." << std::endl;
-
-        throw std::exception(errorMessage.str().c_str());
-    }
-
-    if (GetConsoleScreenBufferInfo(m_consoleOutput, &m_consoleBufferInfo) == FALSE)
-    {
-        std::stringstream errorMessage;
-
-        errorMessage << "Failed to GetConsoleScreenBufferInfo with GLE = ";
-        errorMessage << GetLastError() << "." << std::endl;
-
-        throw std::exception(errorMessage.str().c_str());
-    }
-
-    m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
-    ClearDisplay();
-
-    if (makeActive == true)
-    {
-        if (MakeConsoleActive() == FALSE)
-        {
-            std::stringstream errorMessage;
-
-            errorMessage << "Failed to SetConsoleActiveScreenBuffer with GLE = ";
-            errorMessage << GetLastError() << "." << std::endl;
-
-            throw std::exception(errorMessage.str().c_str());
-        }
-    }
-}
-**/
-
 ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
     m_consoleScreen(consoleSize)
 {
-    /**
-    m_consoleOutput = CreateFile(L"CONOUT$",
-                                (GENERIC_READ | GENERIC_WRITE),
-                                0,
-                                nullptr,
-                                CREATE_NEW,
-                                FILE_ATTRIBUTE_NORMAL, 
-                                nullptr);
-    **/
     m_consoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 
     if (m_consoleOutput == INVALID_HANDLE_VALUE)
@@ -71,15 +15,6 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
-    /**
-    m_consoleInput = CreateFile(L"CONIN$",
-                                (GENERIC_READ | GENERIC_WRITE),
-                                0,
-                                nullptr,
-                                CREATE_NEW,
-                                FILE_ATTRIBUTE_NORMAL,
-                                nullptr);
-    **/
     m_consoleInput = GetStdHandle(STD_INPUT_HANDLE);
 
     if (m_consoleInput == INVALID_HANDLE_VALUE)
@@ -101,9 +36,6 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
 
         throw std::exception(errorMessage.str().c_str());
     }
-
-    //m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
-    //ClearDisplay();
 
     if (SetConsoleSize(consoleSize) == FALSE)
     {
@@ -178,16 +110,15 @@ void ConsoleHandler::ClearDisplay()
 
 BOOL ConsoleHandler::UpdateDisplay(const wchar_t* buffer, const COORD& bufferSize)
 {
-    if ((m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y) != 
-        (bufferSize.X * bufferSize.Y))
+    size_t selfScreenBufferBytesSize =
+        m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y * sizeof(wchar_t);
+    size_t newScreenBufferBytesSize =
+        bufferSize.X * bufferSize.Y * sizeof(wchar_t);
+
+    if (selfScreenBufferBytesSize != newScreenBufferBytesSize)
     {
         return FALSE;
     }
-
-    size_t selfScreenBufferBytesSize = 
-        m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y * sizeof(wchar_t);
-    size_t newScreenBufferBytesSize = 
-        bufferSize.X * bufferSize.Y * sizeof(wchar_t);
 
     int result = memcpy_s(m_consoleScreen.GetFrameBuffer(),
                           selfScreenBufferBytesSize,

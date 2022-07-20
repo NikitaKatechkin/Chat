@@ -19,11 +19,6 @@ public:
 protected:
 	virtual void EventProc(INPUT_RECORD& inputEvent) override;
 	virtual void KeyEventProc(KEY_EVENT_RECORD& ker) override;
-	/**
-	virtual void KeyEventProc(KEY_EVENT_RECORD& ker, 
-							  wchar_t* bufferToWrite, 
-							  const COORD& bufferSize);
-	**/
 	virtual void ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD& wbsr) override;
 	virtual void MouseEventProc(MOUSE_EVENT_RECORD& mer) override;
 	virtual void FocusEventProc(FOCUS_EVENT_RECORD& fer) override;
@@ -34,7 +29,7 @@ protected:
 	void SetCursorPosition(const COORD& newPos);
 
 protected:
-	Frame* m_consoleFrame;
+	Frame* m_consoleFrame = nullptr;
 
 	BOOL WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize);
 public:
