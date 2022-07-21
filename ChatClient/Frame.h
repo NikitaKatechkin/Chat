@@ -23,4 +23,5 @@ public:
 private:
 	wchar_t* m_frame;
 	COORD m_size;
+	DWORD m_frameCharLength;
 };

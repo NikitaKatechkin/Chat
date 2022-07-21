@@ -1,7 +1,9 @@
 #include "Frame.h"
 
 Frame::Frame(const COORD& frameSize):
-	m_size(frameSize), m_frame(new wchar_t[frameSize.X * frameSize.Y])
+	m_size(frameSize), 
+	m_frame(new wchar_t[frameSize.X * frameSize.Y]), 
+	m_frameCharLength(frameSize.X* frameSize.Y)
 {
 	ClearFrame();
 }
@@ -9,8 +11,8 @@ Frame::Frame(const COORD& frameSize):
 Frame::Frame(const Frame& other):
 	Frame(other.m_size)
 {
-	memcpy_s(m_frame, m_size.X * m_size.Y * sizeof(wchar_t), 
-			 other.m_frame, m_size.X * m_size.Y * sizeof(wchar_t));
+	memcpy_s(m_frame, m_frameCharLength * sizeof(wchar_t), 
+			 other.m_frame, m_frameCharLength * sizeof(wchar_t));
 }
 
 Frame& Frame::operator=(const Frame& other)
@@ -26,10 +28,11 @@ Frame& Frame::operator=(const Frame& other)
 	}
 
 	this->m_size = other.m_size;
-	this->m_frame = new wchar_t[m_size.X * m_size.Y];
+	this->m_frameCharLength = other.m_frameCharLength;
+	this->m_frame = new wchar_t[m_frameCharLength];
 
-	memcpy_s(m_frame, m_size.X * m_size.Y * sizeof(wchar_t),
-			 other.m_frame, m_size.X * m_size.Y * sizeof(wchar_t));
+	memcpy_s(m_frame, m_frameCharLength * sizeof(wchar_t),
+			 other.m_frame, m_frameCharLength * sizeof(wchar_t));
 
 	return *this;
 }
@@ -97,5 +100,5 @@ void Frame::PasteShape(const wchar_t* shape, const COORD& shapeSize, const COORD
 
 void Frame::ClearFrame()
 {
-	std::fill_n(m_frame, m_size.X * m_size.Y, L' ');
+	std::fill_n(m_frame, m_frameCharLength, L' ');
 }
