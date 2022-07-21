@@ -162,7 +162,6 @@
     <ClCompile Include="ConsoleEventHandler.cpp" />
     <ClCompile Include="ConsoleHandler.cpp" />
     <ClCompile Include="EventHandler.cpp" />
-    <ClCompile Include="EventProcToolbox.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Shape.cpp" />
@@ -173,7 +172,6 @@
     <ClInclude Include="ConsoleEventHandler.h" />
     <ClInclude Include="ConsoleHandler.h" />
     <ClInclude Include="EventHandler.h" />
-    <ClInclude Include="EventProcToolbox.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Shape.h" />

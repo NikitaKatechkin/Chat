@@ -9,14 +9,15 @@
 class EventHandler
 {
 public:
-	EventHandler() = default;
+	EventHandler() = delete;
 	virtual ~EventHandler() = default;
 	
 public:
 	EventHandler(const HANDLE& eventSource, 
 				 const HANDLE& outputEventSource);
-	EventHandler(const EventHandler& other);
-	EventHandler& operator=(const EventHandler& other);
+
+	EventHandler(const EventHandler& other) = delete;
+	EventHandler& operator=(const EventHandler& other) = delete;
 
 public:
 	void CatchEvent(const DWORD inputBufferSize = 12);

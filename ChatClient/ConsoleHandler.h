@@ -33,12 +33,12 @@ private:
 	HANDLE m_consoleOutput = INVALID_HANDLE_VALUE;
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;
 
-	//wchar_t* m_consoleScreen = nullptr;
 	Frame m_consoleScreen;
 	CONSOLE_SCREEN_BUFFER_INFO m_consoleBufferInfo;
+	DWORD m_consoleScreenLength = 0;
 
 private:
-	ConsoleEventHandler m_eventHandler;
+	ConsoleEventHandler* m_eventHandler = nullptr;
 	bool m_isEventHandlingOn = false;
 	std::thread m_eventHandlingThread;
 

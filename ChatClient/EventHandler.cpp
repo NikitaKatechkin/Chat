@@ -8,6 +8,7 @@ EventHandler::EventHandler(const HANDLE& eventSource,
     
 }
 
+/**
 EventHandler::EventHandler(const EventHandler& other):
     EventHandler(other.m_eventSource, other.m_outputEventSource)
 {
@@ -28,6 +29,7 @@ EventHandler& EventHandler::operator=(const EventHandler& other)
 
     return *this;
 }
+**/
 
 void EventHandler::CatchEvent(const DWORD inputBufferSize)
 {

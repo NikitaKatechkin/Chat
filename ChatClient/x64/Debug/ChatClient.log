@@ -2,7 +2,6 @@
   ConsoleEventHandler.cpp
   ConsoleHandler.cpp
   EventHandler.cpp
-  EventProcToolbox.cpp
   Frame.cpp
   Logger.cpp
   Shape.cpp

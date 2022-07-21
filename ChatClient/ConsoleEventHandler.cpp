@@ -8,6 +8,7 @@ ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource,
     
 }
 
+/**
 ConsoleEventHandler::ConsoleEventHandler(const ConsoleEventHandler& other):
     EventHandler(other)
 {
@@ -29,6 +30,7 @@ ConsoleEventHandler& ConsoleEventHandler::operator=(const ConsoleEventHandler& o
 
     return *this;
 }
+**/
 
 void ConsoleEventHandler::EventProc(INPUT_RECORD& inputEvent)
 {
@@ -61,62 +63,40 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
     {
         auto cursorPos = GetCursorPosition();
 
-        COORD offset;
+        COORD offset{0, 0};
         switch (ker.wVirtualKeyCode)
         {
         case VK_LEFT:
             offset = COORD{ -1, 0 };
 
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
-
             break;
         case VK_RIGHT:
             offset = COORD{ 1, 0 };
-
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         case VK_UP:
             offset = COORD{ 0, -1 };
 
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
-
             break;
         case VK_DOWN:
             offset = COORD{ 0, 1 };
 
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
-
             break;
         case VK_BACK:
         {
+            offset = COORD{ -1, 0 };
+
             std::wstring charToType = { L' ' };
             m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
-
-            offset = COORD{ -1, 0 };
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         }
         case VK_SPACE:
         {
+            offset = COORD{ 1, 0 };
+
             std::wstring charToType = { L' ' };
             m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
-
-            offset = COORD{ 1, 0 };
-            SetCursorPosition(
-                COORD{ static_cast<short>(cursorPos.X + offset.X),
-                       static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         }
@@ -124,19 +104,18 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         {
             if ((ker.wVirtualKeyCode >= 0x41) && (ker.wVirtualKeyCode <= 0x5A))
             {
+                offset = COORD{ 1, 0 };
+             
                 std::wstring charToType = { static_cast<wchar_t>(ker.wVirtualKeyCode) };
                 m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
-
-                offset = COORD{ 1, 0 };
-                SetCursorPosition(
-                    COORD{ static_cast<short>(cursorPos.X + offset.X),
-                           static_cast<short>(cursorPos.Y + offset.Y) });
             }
 
             break;
         }
         }
 
+        SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                 static_cast<short>(cursorPos.Y + offset.Y) });
         WriteToOutputHandle(m_consoleFrame->GetFrameBuffer(), m_consoleFrame->GetFrameSize());
     }
     else

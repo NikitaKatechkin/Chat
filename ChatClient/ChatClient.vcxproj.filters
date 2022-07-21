@@ -45,9 +45,6 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EventProcToolbox.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
     <ClCompile Include="ConsoleHandler.cpp">
       <Filter>Source Files\Console</Filter>
     </ClCompile>
@@ -71,9 +68,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EventProcToolbox.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleHandler.h">
       <Filter>Header Files\Console</Filter>
     </ClInclude>

@@ -6,15 +6,15 @@
 class ConsoleEventHandler final : public EventHandler
 {
 public:
-	ConsoleEventHandler() = default;
+	ConsoleEventHandler() = delete;
 	virtual ~ConsoleEventHandler() = default;
 
 public:
 	ConsoleEventHandler(const HANDLE& eventSource, 
 						const HANDLE& outputEventSource, 
 						Frame* consoleFrame);
-	ConsoleEventHandler(const ConsoleEventHandler& other);
-	ConsoleEventHandler& operator=(const ConsoleEventHandler& other);
+	ConsoleEventHandler(const ConsoleEventHandler& other) = delete;
+	ConsoleEventHandler& operator=(const ConsoleEventHandler& other) = delete;
 
 protected:
 	virtual void EventProc(INPUT_RECORD& inputEvent) override;

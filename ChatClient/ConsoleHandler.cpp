@@ -1,7 +1,8 @@
 #include "ConsoleHandler.h"
 
 ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
-    m_consoleScreen(consoleSize)
+    m_consoleScreen(consoleSize), 
+    m_consoleScreenLength(consoleSize.X * consoleSize.Y)
 {
     m_consoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -37,6 +38,9 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
+    m_eventHandler = new ConsoleEventHandler(m_consoleInput, m_consoleOutput, &m_consoleScreen);
+    m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, this);
+
     if (SetConsoleSize(consoleSize) == FALSE)
     {
         std::stringstream errorMessage;
@@ -46,12 +50,6 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
 
         throw std::exception(errorMessage.str().c_str());
     }
-
-    m_eventHandler = ConsoleEventHandler(m_consoleInput, 
-                                         m_consoleOutput, 
-                                         &m_consoleScreen);
-    m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, 
-                                        this);
 }
 
 ConsoleHandler::~ConsoleHandler()
@@ -61,6 +59,8 @@ ConsoleHandler::~ConsoleHandler()
 
     StopEventHandling();
     m_eventHandlingThread.join();
+
+    delete m_eventHandler;
 }
 
 HANDLE ConsoleHandler::GetWinAPIConsoleInputHandler()
@@ -96,7 +96,7 @@ BOOL ConsoleHandler::Write(const wchar_t* bufferToWrite,
 
     BOOL result = WriteConsoleOutputCharacter(m_consoleOutput,
                                               bufferToWrite,
-                                              bufferSize.X * bufferSize.Y,
+                                              m_consoleScreenLength,
                                               insertionTopLeft,
                                               &bytesWritten);
 
@@ -111,7 +111,7 @@ void ConsoleHandler::ClearDisplay()
 BOOL ConsoleHandler::UpdateDisplay(const wchar_t* buffer, const COORD& bufferSize)
 {
     size_t selfScreenBufferBytesSize =
-        m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y * sizeof(wchar_t);
+        m_consoleScreenLength * sizeof(wchar_t);
     size_t newScreenBufferBytesSize =
         bufferSize.X * bufferSize.Y * sizeof(wchar_t);
 
@@ -145,9 +145,10 @@ BOOL ConsoleHandler::Update()
         //m_consoleScreen = new wchar_t[m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y];
 
         m_consoleScreen = Frame(m_consoleBufferInfo.dwSize);
+        m_consoleScreenLength = m_consoleBufferInfo.dwSize.X * m_consoleBufferInfo.dwSize.Y;
 
-        m_eventHandler.SetConsoleFrame(&m_consoleScreen);
-;
+        m_eventHandler->SetConsoleFrame(&m_consoleScreen);
+
         ClearDisplay();
     }
 
@@ -197,8 +198,8 @@ void ConsoleHandler::StartEventHandling()
 
     while (m_isEventHandlingOn == true)
     {
-        m_eventHandler.CatchEvent();
-        m_eventHandler.ProcessEvent();
+        m_eventHandler->CatchEvent();
+        m_eventHandler->ProcessEvent();
     }
 }
 
