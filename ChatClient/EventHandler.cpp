@@ -1,9 +1,11 @@
 #include "EventHandler.h"
 
-EventHandler::EventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource):
-	m_eventSource(eventSource), m_outputEventSource(outputEventSource)
+EventHandler::EventHandler(const HANDLE& eventSource, 
+                           const HANDLE& outputEventSource):
+	m_eventSource(eventSource), 
+    m_outputEventSource(outputEventSource)
 {
-
+    
 }
 
 EventHandler::EventHandler(const EventHandler& other):
@@ -32,14 +34,17 @@ void EventHandler::CatchEvent(const DWORD inputBufferSize)
 	DWORD numberOccuredEvents = 0;
 	auto inputBuffer = std::shared_ptr<INPUT_RECORD[]>(new INPUT_RECORD[inputBufferSize]);
 
-	if (ReadConsoleInput(m_eventSource, inputBuffer.get(),
-		static_cast<DWORD>(inputBufferSize), &numberOccuredEvents) == TRUE)
+	if (ReadConsoleInput(m_eventSource, 
+                         inputBuffer.get(),
+		                 static_cast<DWORD>(inputBufferSize), 
+                         &numberOccuredEvents) 
+        == TRUE)
 	{
         std::lock_guard<std::mutex> lock(m_queueAccess);
 
-		for (DWORD i = 0; i < numberOccuredEvents; i++)
+		for (size_t i = 0; i < numberOccuredEvents; i++)
 		{
-			m_eventQueue.push_back(inputBuffer[i]);
+			m_eventQueue.push(inputBuffer[i]);
 		}
 	}
 }
@@ -51,7 +56,7 @@ void EventHandler::ProcessEvent()
     for (size_t i = 0; i < m_eventQueue.size(); i++)
     {
         EventProc(m_eventQueue.front());
-        m_eventQueue.erase(m_eventQueue.begin());
+        m_eventQueue.pop();
     }
 }
 

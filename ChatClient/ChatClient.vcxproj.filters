@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Shapes">
       <UniqueIdentifier>{eef1694e-2514-46c5-9056-59435d7b2673}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logger">
+      <UniqueIdentifier>{6588fee4-537e-4da6-99a2-bdaf69bd0d08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logger">
+      <UniqueIdentifier>{7ef4d483-6d73-4b1b-a4ea-2cc918030232}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -38,12 +44,6 @@
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EventCollector.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="EventProcessor.cpp">
-      <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="EventProcToolbox.cpp">
       <Filter>Source Files\Event</Filter>
@@ -66,14 +66,11 @@
     <ClCompile Include="ConsoleEventHandler.cpp">
       <Filter>Source Files\Console</Filter>
     </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files\Logger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EventCollector.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="EventProcessor.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
     <ClInclude Include="EventProcToolbox.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
@@ -94,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="ConsoleEventHandler.h">
       <Filter>Header Files\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files\Logger</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

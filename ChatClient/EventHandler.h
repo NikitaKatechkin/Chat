@@ -1,8 +1,10 @@
 #pragma once
 
-#include "EventCollector.h"
-#include "EventProcessor.h"
+#include <Windows.h>
 #include <sstream>
+#include <queue>
+#include <iostream>
+#include <mutex>
 
 class EventHandler
 {
@@ -11,7 +13,8 @@ public:
 	virtual ~EventHandler() = default;
 	
 public:
-	EventHandler(const HANDLE& eventSource, const HANDLE& outputEventSource);
+	EventHandler(const HANDLE& eventSource, 
+				 const HANDLE& outputEventSource);
 	EventHandler(const EventHandler& other);
 	EventHandler& operator=(const EventHandler& other);
 
@@ -20,9 +23,11 @@ public:
 	void ProcessEvent();
 
 protected:
-	std::vector<INPUT_RECORD> m_eventQueue;
+	std::queue<INPUT_RECORD> m_eventQueue;
 	std::mutex m_queueAccess;
 	//HANDLE m_newEventFlag = INVALID_HANDLE_VALUE; DEPRICATED
+
+protected:
 	HANDLE m_eventSource = INVALID_HANDLE_VALUE;
 	HANDLE m_outputEventSource = INVALID_HANDLE_VALUE;
 

@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <sstream>
 #include <iostream>
+#include <thread>
 
 class ConsoleHandler
 {
