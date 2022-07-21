@@ -116,7 +116,7 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
 
         SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
                                  static_cast<short>(cursorPos.Y + offset.Y) });
-        WriteToOutputHandle(m_consoleFrame->GetFrameBuffer(), m_consoleFrame->GetFrameSize());
+        WriteToOutputHandle();
     }
     else
     {
@@ -153,12 +153,19 @@ void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), newPos);
 }
 
-BOOL ConsoleEventHandler::WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize)
+BOOL ConsoleEventHandler::WriteToOutputHandle()
 {
+    if (m_consoleFrame->GetFrameBuffer() == nullptr)
+    {
+        return FALSE;
+    }
+
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(m_outputEventSource, &csbi);
 
-    if ((csbi.dwSize.X != bufferSize.X) || (csbi.dwSize.Y != bufferSize.Y))
+    COORD frameSize = m_consoleFrame->GetFrameSize();
+
+    if ((csbi.dwSize.X != frameSize.X) || (csbi.dwSize.Y != frameSize.Y))
     {
         return FALSE;
     }
@@ -166,8 +173,8 @@ BOOL ConsoleEventHandler::WriteToOutputHandle(wchar_t* bufferToWrite, const COOR
     DWORD bytesWritten = 0;
 
     BOOL result = WriteConsoleOutputCharacter(m_outputEventSource,
-                                              bufferToWrite,
-                                              bufferSize.X * bufferSize.Y,
+                                              m_consoleFrame->GetFrameBuffer(),
+                                              m_consoleFrame->GetFrameCharLength(),
                                               COORD {0, 0},
                                               &bytesWritten);
 

@@ -14,6 +14,7 @@ public:
 public:
 	COORD GetFrameSize();
 	wchar_t* GetFrameBuffer();
+	DWORD GetFrameCharLength();
 
 	void PasteShape(const wchar_t* shape, 
 					const COORD& shapeSize, 
@@ -22,6 +23,6 @@ public:
 	void ClearFrame();
 private:
 	wchar_t* m_frame;
-	COORD m_size;
 	DWORD m_frameCharLength;
+	COORD m_size;
 };

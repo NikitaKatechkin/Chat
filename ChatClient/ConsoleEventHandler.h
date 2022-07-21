@@ -31,7 +31,7 @@ protected:
 protected:
 	Frame* m_consoleFrame = nullptr;
 
-	BOOL WriteToOutputHandle(wchar_t* bufferToWrite, const COORD& bufferSize);
+	BOOL WriteToOutputHandle();
 public:
 	void SetConsoleFrame(Frame* consoleFrame);
 };

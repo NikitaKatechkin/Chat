@@ -69,6 +69,11 @@ wchar_t* Frame::GetFrameBuffer()
 	return m_frame;
 }
 
+DWORD Frame::GetFrameCharLength()
+{
+	return m_frameCharLength;
+}
+
 void Frame::PasteShape(const wchar_t* shape, const COORD& shapeSize, const COORD& topLeftInsertPoint)
 {
 	COORD startPoint;
