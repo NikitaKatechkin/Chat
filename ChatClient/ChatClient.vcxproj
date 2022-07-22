@@ -166,6 +166,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BorderShape.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="Widget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

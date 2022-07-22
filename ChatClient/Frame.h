@@ -16,6 +16,8 @@ public:
 	wchar_t* GetFrameBuffer();
 	DWORD GetFrameCharLength();
 
+	void SetFrameSize(const COORD& frameSize);
+
 	void PasteShape(const wchar_t* shape, 
 					const COORD& shapeSize, 
 					const COORD& topLeftInsertPoint);

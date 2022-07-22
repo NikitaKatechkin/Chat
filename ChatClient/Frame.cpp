@@ -74,6 +74,21 @@ DWORD Frame::GetFrameCharLength()
 	return m_frameCharLength;
 }
 
+void Frame::SetFrameSize(const COORD& frameSize)
+{
+	m_size = frameSize;
+	m_frameCharLength = m_size.X * m_size.Y;
+
+	if (m_frame != nullptr)
+	{
+		delete[] m_frame;
+		m_frame = nullptr;
+	}
+
+	m_frame = new wchar_t[m_frameCharLength];
+	ClearFrame();
+}
+
 void Frame::PasteShape(const wchar_t* shape, const COORD& shapeSize, const COORD& topLeftInsertPoint)
 {
 	COORD startPoint;

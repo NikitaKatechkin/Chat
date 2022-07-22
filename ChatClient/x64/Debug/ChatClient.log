@@ -6,5 +6,6 @@
   Logger.cpp
   Shape.cpp
   Source.cpp
+  Widget.cpp
   Generating Code...
   ChatClient.vcxproj -> C:\Users\NikiBot\source\repos\Chat\x64\Debug\ChatClient.exe

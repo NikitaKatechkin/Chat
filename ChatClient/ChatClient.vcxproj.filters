@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Logger">
       <UniqueIdentifier>{7ef4d483-6d73-4b1b-a4ea-2cc918030232}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Console\Widgets">
+      <UniqueIdentifier>{da5ee3d5-e37e-4f9f-bb62-1373cbfbcabe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -66,6 +69,9 @@
     <ClCompile Include="Logger.cpp">
       <Filter>Source Files\Logger</Filter>
     </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleHandler.h">
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Header Files\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.h">
+      <Filter>Header Files\Console\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
