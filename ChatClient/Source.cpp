@@ -343,6 +343,7 @@ Frame CreateMainScreen(const COORD& frameSize)
 **/
 
 #include "Widget.h"
+#include "InputWidget.h"
 #include "Frame.h"
 #include "BorderShape.h"
 
@@ -376,7 +377,7 @@ int main()
                 Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
                 auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
 
-                Widget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
+                InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
                 auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
 
                 widgetInfo.ClearWidget();

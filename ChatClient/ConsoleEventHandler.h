@@ -12,7 +12,8 @@ public:
 public:
 	ConsoleEventHandler(const HANDLE& eventSource, 
 						const HANDLE& outputEventSource, 
-						Frame* consoleFrame);
+						Frame* consoleFrame,
+						const COORD& frameStartPos = {0, 0});
 	ConsoleEventHandler(const ConsoleEventHandler& other) = delete;
 	ConsoleEventHandler& operator=(const ConsoleEventHandler& other) = delete;
 
@@ -30,8 +31,10 @@ protected:
 
 protected:
 	Frame* m_consoleFrame = nullptr;
+	COORD m_frameStartPos;
 
 	BOOL WriteToOutputHandle();
 public:
-	void SetConsoleFrame(Frame* consoleFrame);
+	void SetConsoleFrame(Frame* consoleFrame, 
+						 const COORD& frameStartPos = { 0, 0 });
 };

@@ -2,8 +2,11 @@
 
 ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource, 
                                          const HANDLE& outputEventSource, 
-                                         Frame* consoleFrame):
-	EventHandler(eventSource, outputEventSource), m_consoleFrame(consoleFrame)
+                                         Frame* consoleFrame,
+                                         const COORD& frameStartPos):
+	EventHandler(eventSource, outputEventSource), 
+    m_consoleFrame(consoleFrame), 
+    m_frameStartPos(frameStartPos)
 {
     
 }
@@ -62,6 +65,9 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
     if (ker.bKeyDown)
     {
         auto cursorPos = GetCursorPosition();
+        COORD localFrameCursorPos = COORD{
+            static_cast<short>(cursorPos.X - m_frameStartPos.X),
+            static_cast<short>(cursorPos.Y - m_frameStartPos.Y)};
 
         COORD offset{0, 0};
         switch (ker.wVirtualKeyCode)
@@ -87,7 +93,9 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
             offset = COORD{ -1, 0 };
 
             std::wstring charToType = { L' ' };
-            m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
+            m_consoleFrame->PasteShape(charToType.c_str(), 
+                                       COORD{ 1, 1 }, 
+                                       localFrameCursorPos);
 
             break;
         }
@@ -96,7 +104,9 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
             offset = COORD{ 1, 0 };
 
             std::wstring charToType = { L' ' };
-            m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
+            m_consoleFrame->PasteShape(charToType.c_str(), 
+                                       COORD{ 1, 1 }, 
+                                       localFrameCursorPos);
 
             break;
         }
@@ -107,7 +117,9 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                 offset = COORD{ 1, 0 };
              
                 std::wstring charToType = { static_cast<wchar_t>(ker.wVirtualKeyCode) };
-                m_consoleFrame->PasteShape(charToType.c_str(), COORD{ 1, 1 }, cursorPos);
+                m_consoleFrame->PasteShape(charToType.c_str(), 
+                                           COORD{ 1, 1 }, 
+                                           localFrameCursorPos);
             }
 
             break;
@@ -165,23 +177,27 @@ BOOL ConsoleEventHandler::WriteToOutputHandle()
 
     COORD frameSize = m_consoleFrame->GetFrameSize();
 
+    /**
     if ((csbi.dwSize.X != frameSize.X) || (csbi.dwSize.Y != frameSize.Y))
     {
         return FALSE;
     }
+    **/
 
     DWORD bytesWritten = 0;
 
     BOOL result = WriteConsoleOutputCharacter(m_outputEventSource,
                                               m_consoleFrame->GetFrameBuffer(),
                                               m_consoleFrame->GetFrameCharLength(),
-                                              COORD {0, 0},
+                                              m_frameStartPos,
                                               &bytesWritten);
 
     return result;
 }
 
-void ConsoleEventHandler::SetConsoleFrame(Frame* consoleFrame)
+void ConsoleEventHandler::SetConsoleFrame(Frame* consoleFrame, 
+                                          const COORD& frameStartPos)
 {
     m_consoleFrame = consoleFrame;
+    m_frameStartPos = frameStartPos;
 }

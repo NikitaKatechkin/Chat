@@ -40,9 +40,9 @@
     <Filter Include="Header Files\Console\Widgets">
       <UniqueIdentifier>{da5ee3d5-e37e-4f9f-bb62-1373cbfbcabe}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Filter Include="Source Files\Console\Widgets">
+      <UniqueIdentifier>{9fc6111d-6d04-49d4-a225-26268c2e4507}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -70,6 +70,9 @@
       <Filter>Source Files\Logger</Filter>
     </ClCompile>
     <ClCompile Include="Widget.cpp">
+      <Filter>Source Files\Console\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="InputWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,6 +99,9 @@
       <Filter>Header Files\Logger</Filter>
     </ClInclude>
     <ClInclude Include="Widget.h">
+      <Filter>Header Files\Console\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="InputWidget.h">
       <Filter>Header Files\Console\Widgets</Filter>
     </ClInclude>
   </ItemGroup>

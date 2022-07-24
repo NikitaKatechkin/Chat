@@ -14,8 +14,11 @@ public:
 		   const COORD& widgetSize = COORD{80, 30});
 	virtual ~Widget() = default;
 
-	HANDLE GetWinAPIConsoleInputHandler();
-	HANDLE GetWinAPIConsoleOutputHandler();
+	virtual HANDLE GetWinAPIConsoleInputHandler();
+	virtual HANDLE GetWinAPIConsoleOutputHandler();
+
+	virtual COORD GetRenderStartPoint();
+	virtual void SetRenderStartPoint(const COORD& renderStartPoint);
 
 	virtual void SetWidgetSize(const COORD& widgetSize);
 	virtual COORD GetWidgetSize();
@@ -24,6 +27,8 @@ public:
 	virtual BOOL DrawWidget(const wchar_t* buffer,
 					const COORD& bufferSize);
 	virtual BOOL DisplayWidget();
+
+	virtual BOOL Update();
 
 protected:
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;

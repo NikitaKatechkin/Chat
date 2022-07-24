@@ -37,9 +37,21 @@ HANDLE Widget::GetWinAPIConsoleOutputHandler()
 	return m_consoleOutput;
 }
 
+COORD Widget::GetRenderStartPoint()
+{
+    return m_renderStartPoint;
+}
+
+void Widget::SetRenderStartPoint(const COORD& renderStartPoint)
+{
+    m_renderStartPoint = renderStartPoint;
+}
+
 void Widget::SetWidgetSize(const COORD& widgetSize)
 {
     m_widgetFrame.SetFrameSize(widgetSize);
+
+    this->Update();
 }
 
 COORD Widget::GetWidgetSize()
@@ -81,4 +93,9 @@ BOOL Widget::DisplayWidget()
                                               &bytesWritten);
 
     return result;
+}
+
+BOOL Widget::Update()
+{
+    return TRUE;
 }
