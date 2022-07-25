@@ -3,6 +3,8 @@
 #include "Widget.h"
 #include "ConsoleEventHandler.h"
 
+#include <memory>
+
 class InputWidget final : public Widget
 {
 public:
@@ -11,7 +13,7 @@ public:
 	virtual ~InputWidget();
 
 private:
-	ConsoleEventHandler* m_eventHandler;
+	std::unique_ptr<ConsoleEventHandler> m_eventHandler;
 	std::thread m_eventHandlingThread;
 	bool m_isEventHandlingOn;
 

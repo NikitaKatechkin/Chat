@@ -17,7 +17,7 @@ InputWidget::~InputWidget()
 	StopEventHandling();
 	m_eventHandlingThread.join();
 
-	delete m_eventHandler;
+	//delete m_eventHandler;
 }
 
 void InputWidget::StartEventHandling()
