@@ -29,6 +29,8 @@ protected:
 	COORD GetCursorPosition() const;
 	void SetCursorPosition(const COORD& newPos);
 
+	void PrintCharacterToConsoleFrame(const wchar_t& character);
+	void DeleteCharacterFromConsoleFrame();
 protected:
 	Frame* m_consoleFrame = nullptr;
 	COORD m_frameStartPos;

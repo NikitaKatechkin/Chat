@@ -74,22 +74,31 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
         {
         case VK_LEFT:
             offset = COORD{ -1, 0 };
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         case VK_RIGHT:
             offset = COORD{ 1, 0 };
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         case VK_UP:
             offset = COORD{ 0, -1 };
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         case VK_DOWN:
             offset = COORD{ 0, 1 };
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
 
             break;
         case VK_BACK:
         {
+            /**
             offset = COORD{ -1, 0 };
 
             std::wstring charToType = { L' ' };
@@ -97,10 +106,17 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                                        COORD{ 1, 1 }, 
                                        localFrameCursorPos);
 
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
+            **/
+
+            DeleteCharacterFromConsoleFrame();
+
             break;
         }
         case VK_SPACE:
         {
+            /**
             offset = COORD{ 1, 0 };
 
             std::wstring charToType = { L' ' };
@@ -108,26 +124,39 @@ void ConsoleEventHandler::KeyEventProc(KEY_EVENT_RECORD& ker)
                                        COORD{ 1, 1 }, 
                                        localFrameCursorPos);
 
+            SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
+            **/
+
+            PrintCharacterToConsoleFrame(L' ');
+
             break;
         }
         default:
         {
             if ((ker.wVirtualKeyCode >= 0x41) && (ker.wVirtualKeyCode <= 0x5A))
             {
+                /**
                 offset = COORD{ 1, 0 };
              
                 std::wstring charToType = { static_cast<wchar_t>(ker.wVirtualKeyCode) };
                 m_consoleFrame->PasteShape(charToType.c_str(), 
                                            COORD{ 1, 1 }, 
                                            localFrameCursorPos);
+
+                SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                     static_cast<short>(cursorPos.Y + offset.Y) });
+                **/
+
+                PrintCharacterToConsoleFrame(static_cast<wchar_t>(ker.wVirtualKeyCode));
             }
 
             break;
         }
         }
 
-        SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
-                                 static_cast<short>(cursorPos.Y + offset.Y) });
+        //SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+        //                         static_cast<short>(cursorPos.Y + offset.Y) });
         WriteToOutputHandle();
     }
     else
@@ -163,6 +192,84 @@ COORD ConsoleEventHandler::GetCursorPosition() const
 void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
 {
     SetConsoleCursorPosition(m_outputEventSource, newPos);
+}
+
+void ConsoleEventHandler::PrintCharacterToConsoleFrame(const wchar_t& character)
+{
+    COORD cursorPos = GetCursorPosition();
+    COORD localFrameCursorPos = COORD{
+        static_cast<short>(cursorPos.X - m_frameStartPos.X),
+        static_cast<short>(cursorPos.Y - m_frameStartPos.Y) };
+    COORD frameSize = m_consoleFrame->GetFrameSize();
+
+    if ((localFrameCursorPos.X < frameSize.X - 1) &&
+        (localFrameCursorPos.X > 0) && 
+        (localFrameCursorPos.Y < frameSize.Y - 1) &&
+        (localFrameCursorPos.Y > 0))
+    {
+        // Character can be printed
+        m_consoleFrame->PasteShape(&character,
+                                   COORD{ 1, 1 },
+                                   localFrameCursorPos);
+
+        COORD offset{ 1, 0 };
+
+        if (localFrameCursorPos.X == frameSize.X - 2)
+        {
+            //Cursor is right before border
+            if (localFrameCursorPos.Y == frameSize.Y - 2)
+            {
+                //Cursor is in right bottom corner
+                offset = COORD{ 0, 0 };
+            }
+            else
+            {
+                offset = COORD{ static_cast<short>(1 - localFrameCursorPos.X), 1 };
+            }
+        }
+
+        SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                 static_cast<short>(cursorPos.Y + offset.Y) });
+    }
+}
+
+void ConsoleEventHandler::DeleteCharacterFromConsoleFrame()
+{
+    COORD cursorPos = GetCursorPosition();
+    COORD localFrameCursorPos = COORD{
+        static_cast<short>(cursorPos.X - m_frameStartPos.X),
+        static_cast<short>(cursorPos.Y - m_frameStartPos.Y) };
+    COORD frameSize = m_consoleFrame->GetFrameSize();
+
+    if ((localFrameCursorPos.X < frameSize.X - 1) &&
+        (localFrameCursorPos.X > 0) &&
+        (localFrameCursorPos.Y < frameSize.Y - 1) &&
+        (localFrameCursorPos.Y > 0))
+    {
+        // Character can be printed
+        m_consoleFrame->PasteShape(L" ",
+                                   COORD{ 1, 1 },
+                                   localFrameCursorPos);
+
+        COORD offset{ -1, 0 };
+
+        if (localFrameCursorPos.X == 1)
+        {
+            //Cursor is right after border
+            if (localFrameCursorPos.Y == 1)
+            {
+                //Cursor is in left top corner
+                offset = COORD{ 0, 0 };
+            }
+            else
+            {
+                offset = COORD{ static_cast<short>(frameSize.X - 3), -1 };
+            }
+        }
+
+        SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
+                                 static_cast<short>(cursorPos.Y + offset.Y) });
+    }
 }
 
 BOOL ConsoleEventHandler::WriteToOutputHandle() const
