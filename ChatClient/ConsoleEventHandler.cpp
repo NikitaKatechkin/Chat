@@ -162,7 +162,7 @@ COORD ConsoleEventHandler::GetCursorPosition()
 
 void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
 {
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), newPos);
+    SetConsoleCursorPosition(m_outputEventSource, newPos);
 }
 
 BOOL ConsoleEventHandler::WriteToOutputHandle()
