@@ -25,7 +25,7 @@ public:
 
 	virtual void ClearWidget();
 	virtual BOOL DrawWidget(const wchar_t* buffer,
-					const COORD& bufferSize);
+							const COORD& bufferSize);
 	virtual BOOL DisplayWidget() const;
 
 	virtual BOOL Update();

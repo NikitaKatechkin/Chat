@@ -9,6 +9,49 @@ ConsoleEventHandler::ConsoleEventHandler(const HANDLE& eventSource,
     m_frameStartPos(frameStartPos)
 {
     
+    COORD cursorPos = COORD{ static_cast<short>(m_frameStartPos.X + 2),
+                             static_cast<short>(m_frameStartPos.Y + 1) };
+
+    /**
+    wchar_t* frameBuffer = m_consoleFrame->GetFrameBuffer();
+    size_t frameBufferLength = m_consoleFrame->GetFrameCharLength();
+
+    COORD emptyCharCoord = COORD{ 0, 0 };
+    for (size_t emptyCharIndex = 0; emptyCharIndex < frameBufferLength; emptyCharIndex++)
+    {
+        if (frameBuffer[emptyCharIndex] == L' ')
+        {
+            COORD frameSize = m_consoleFrame->GetFrameSize();
+            emptyCharCoord = COORD{
+                static_cast<short>(emptyCharIndex % frameSize.X),
+                static_cast<short>(emptyCharIndex / frameSize.X) };
+
+            break;
+        }
+    }
+
+    cursorPos = COORD{ static_cast<short>(m_frameStartPos.X + emptyCharCoord.X),
+                       static_cast<short>(m_frameStartPos.Y + emptyCharCoord.Y) };
+
+    wchar_t* frameBuffer = m_consoleFrame->GetFrameBuffer();
+    size_t frameBufferLength = m_consoleFrame->GetFrameCharLength();
+
+    auto emptyCharIter = std::find(frameBuffer,
+                                   frameBuffer + frameBufferLength,
+                                   L' ');
+    size_t emptyCharIndex = std::distance(frameBuffer, emptyCharIter);
+
+    if (emptyCharIndex <= m_consoleFrame->GetFrameCharLength())
+    {
+        auto cursorX = m_frameStartPos.X + emptyCharIndex % m_consoleFrame->GetFrameSize().X;
+        auto cursorY = m_frameStartPos.Y + emptyCharIndex / m_consoleFrame->GetFrameSize().X;
+
+        cursorPos = COORD{ static_cast<short>(cursorX), 
+                           static_cast<short>(cursorY)};
+    }
+    **/
+    
+    SetCursorPosition(cursorPos);
 }
 
 /**
@@ -308,3 +351,4 @@ void ConsoleEventHandler::SetConsoleFrame(Frame* consoleFrame,
     m_consoleFrame = consoleFrame;
     m_frameStartPos = frameStartPos;
 }
+

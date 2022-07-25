@@ -3,6 +3,8 @@
 #include "EventHandler.h"
 #include "Frame.h"
 
+#include <algorithm>
+
 class ConsoleEventHandler final : public EventHandler
 {
 public:
