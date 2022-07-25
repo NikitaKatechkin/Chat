@@ -152,7 +152,7 @@ void ConsoleEventHandler::MenuEventProc(MENU_EVENT_RECORD& mer)
 {
 }
 
-COORD ConsoleEventHandler::GetCursorPosition()
+COORD ConsoleEventHandler::GetCursorPosition() const
 {
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
     GetConsoleScreenBufferInfo(m_outputEventSource, &bufferInfo);
@@ -165,7 +165,7 @@ void ConsoleEventHandler::SetCursorPosition(const COORD& newPos)
     SetConsoleCursorPosition(m_outputEventSource, newPos);
 }
 
-BOOL ConsoleEventHandler::WriteToOutputHandle()
+BOOL ConsoleEventHandler::WriteToOutputHandle() const
 {
     if (m_consoleFrame->GetFrameBuffer() == nullptr)
     {

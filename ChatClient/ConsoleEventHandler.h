@@ -26,14 +26,14 @@ protected:
 	virtual void MenuEventProc(MENU_EVENT_RECORD& mer) override;
 
 protected:
-	COORD GetCursorPosition();
+	COORD GetCursorPosition() const;
 	void SetCursorPosition(const COORD& newPos);
 
 protected:
 	Frame* m_consoleFrame = nullptr;
 	COORD m_frameStartPos;
 
-	BOOL WriteToOutputHandle();
+	BOOL WriteToOutputHandle() const;
 public:
 	void SetConsoleFrame(Frame* consoleFrame, 
 						 const COORD& frameStartPos = { 0, 0 });

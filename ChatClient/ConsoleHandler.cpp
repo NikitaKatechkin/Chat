@@ -102,7 +102,7 @@ COORD ConsoleHandler::GetConsoleSize()
     return m_consoleBufferInfo.dwSize;
 }
 
-void ConsoleHandler::ClearDisplay()
+void ConsoleHandler::Clear()
 {
     for (auto& widget : m_widgetList)
     {
@@ -110,12 +110,12 @@ void ConsoleHandler::ClearDisplay()
     }
 }
 
-BOOL ConsoleHandler::UpdateDisplay(const wchar_t* buffer, const COORD& bufferSize)
+BOOL ConsoleHandler::Draw(const wchar_t* buffer, const COORD& bufferSize)
 {
     return FALSE;
 }
 
-BOOL ConsoleHandler::DrawDisplay()
+BOOL ConsoleHandler::Display()
 {
     BOOL result = TRUE;
 
@@ -142,13 +142,13 @@ BOOL ConsoleHandler::Update()
             widget.Update();
         }
         
-        ClearDisplay();
+        Clear();
     }
 
     return result;
 }
 
-BOOL ConsoleHandler::AddWidget(Widget& widget)
+BOOL ConsoleHandler::AddWidget(const Widget& widget)
 {
     COORD widgetSize = widget.GetWidgetSize();
     COORD startRenderPoint = widget.GetRenderStartPoint();

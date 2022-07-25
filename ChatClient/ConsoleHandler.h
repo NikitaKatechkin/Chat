@@ -22,14 +22,14 @@ public:
 	BOOL SetConsoleSize(const COORD& consoleSize);
 	COORD GetConsoleSize();
 
-	void ClearDisplay();
-	BOOL UpdateDisplay(const wchar_t* buffer, const COORD& bufferSize);
-	BOOL DrawDisplay();
+	void Clear();
+	BOOL Draw(const wchar_t* buffer, const COORD& bufferSize);
+	BOOL Display();
 
 	BOOL Update();
 
 public:
-	BOOL AddWidget(Widget& widget);
+	BOOL AddWidget(const Widget& widget);
 private:
 	HANDLE m_consoleOutput = INVALID_HANDLE_VALUE;
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;

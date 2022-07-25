@@ -27,17 +27,17 @@ Widget::Widget(const COORD& renderStartPoint, const COORD& widgetSize):
     }
 }
 
-HANDLE Widget::GetWinAPIConsoleInputHandler()
+HANDLE Widget::GetWinAPIConsoleInputHandler() const
 {
 	return m_consoleInput;
 }
 
-HANDLE Widget::GetWinAPIConsoleOutputHandler()
+HANDLE Widget::GetWinAPIConsoleOutputHandler() const
 {
 	return m_consoleOutput;
 }
 
-COORD Widget::GetRenderStartPoint()
+COORD Widget::GetRenderStartPoint() const
 {
     return m_renderStartPoint;
 }
@@ -54,7 +54,7 @@ void Widget::SetWidgetSize(const COORD& widgetSize)
     this->Update();
 }
 
-COORD Widget::GetWidgetSize()
+COORD Widget::GetWidgetSize() const
 {
     return m_widgetFrame.GetFrameSize();
 }
@@ -82,7 +82,7 @@ BOOL Widget::DrawWidget(const wchar_t* buffer, const COORD& bufferSize)
     return (result == 0) ? TRUE : FALSE;
 }
 
-BOOL Widget::DisplayWidget()
+BOOL Widget::DisplayWidget() const
 {
     DWORD bytesWritten = 0;
     

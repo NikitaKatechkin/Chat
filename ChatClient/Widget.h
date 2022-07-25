@@ -14,19 +14,19 @@ public:
 		   const COORD& widgetSize = COORD{80, 30});
 	virtual ~Widget() = default;
 
-	virtual HANDLE GetWinAPIConsoleInputHandler();
-	virtual HANDLE GetWinAPIConsoleOutputHandler();
+	virtual HANDLE GetWinAPIConsoleInputHandler() const;
+	virtual HANDLE GetWinAPIConsoleOutputHandler() const;
 
-	virtual COORD GetRenderStartPoint();
+	virtual COORD GetRenderStartPoint() const;
 	virtual void SetRenderStartPoint(const COORD& renderStartPoint);
 
 	virtual void SetWidgetSize(const COORD& widgetSize);
-	virtual COORD GetWidgetSize();
+	virtual COORD GetWidgetSize() const;
 
 	virtual void ClearWidget();
 	virtual BOOL DrawWidget(const wchar_t* buffer,
 					const COORD& bufferSize);
-	virtual BOOL DisplayWidget();
+	virtual BOOL DisplayWidget() const;
 
 	virtual BOOL Update();
 

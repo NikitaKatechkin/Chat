@@ -534,13 +534,13 @@ int main()
 
     ConsoleHandler console(COORD{ 80, 40 });
 
-    console.ClearDisplay();
+    console.Clear();
 
     console.AddWidget(widgetInfo);
     console.AddWidget(widgetMessage);
     console.AddWidget(widgetInput);
 
-    console.DrawDisplay();
+    console.Display();
 
     /**
     Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });

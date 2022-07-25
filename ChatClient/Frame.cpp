@@ -42,12 +42,12 @@ Frame::~Frame()
 	delete[] m_frame;
 }
 
-COORD Frame::GetFrameSize()
+COORD Frame::GetFrameSize() const
 {
 	return m_size;
 }
 
-wchar_t* Frame::GetFrameBuffer()
+wchar_t* Frame::GetFrameBuffer() const
 {
 	/**
 	wchar_t* bufferToWrite = new wchar_t[m_size.X * m_size.Y];
@@ -69,7 +69,7 @@ wchar_t* Frame::GetFrameBuffer()
 	return m_frame;
 }
 
-DWORD Frame::GetFrameCharLength()
+DWORD Frame::GetFrameCharLength() const
 {
 	return m_frameCharLength;
 }

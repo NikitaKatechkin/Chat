@@ -12,9 +12,9 @@ public:
 	Frame(const Frame& other);
 	Frame& operator=(const Frame& other);
 public:
-	COORD GetFrameSize();
-	wchar_t* GetFrameBuffer();
-	DWORD GetFrameCharLength();
+	COORD GetFrameSize() const;
+	wchar_t* GetFrameBuffer() const;
+	DWORD GetFrameCharLength() const;
 
 	void SetFrameSize(const COORD& frameSize);
 
