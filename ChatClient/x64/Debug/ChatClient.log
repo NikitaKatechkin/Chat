@@ -1,12 +1,2 @@
-﻿  BorderShape.cpp
-  ConsoleEventHandler.cpp
-  ConsoleHandler.cpp
-  EventHandler.cpp
-  Frame.cpp
-  InputWidget.cpp
-  Logger.cpp
-  Shape.cpp
-  Source.cpp
-  Widget.cpp
-  Создание кода...
+﻿  Source.cpp
   ChatClient.vcxproj -> C:\Users\nikita.katechkin\source\repos\Chat\x64\Debug\ChatClient.exe

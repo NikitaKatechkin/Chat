@@ -342,6 +342,7 @@ Frame CreateMainScreen(const COORD& frameSize)
 }
 **/
 
+/**
 #include "Widget.h"
 #include "InputWidget.h"
 #include "Frame.h"
@@ -469,6 +470,158 @@ Frame CreateInfoFrame(const COORD& frameSize)
     frame.PasteShape(text.c_str(), 
                      COORD{ static_cast<short>(text.length()), 1 },
                      COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame CreateMessageFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame CreateInputFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+**/
+
+#include "ConsoleHandler.h"
+#include "Widget.h"
+#include "InputWidget.h"
+#include "Frame.h"
+#include "BorderShape.h"
+
+Frame CreateMainScreen(const COORD& frameSize);
+Frame CreateInfoFrame(const COORD& frameSize);
+Frame CreateMessageFrame(const COORD& frameSize);
+Frame CreateInputFrame(const COORD& frameSize);
+
+int main()
+{
+    int exit_code = 0;
+
+    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
+    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
+    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
+
+    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
+    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
+    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), frameMessage.GetFrameSize());
+
+    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
+    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
+    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
+
+    ConsoleHandler console(COORD{ 80, 40 });
+
+    console.ClearDisplay();
+
+    console.AddWidget(widgetInfo);
+    console.AddWidget(widgetMessage);
+    console.AddWidget(widgetInput);
+
+    console.DrawDisplay();
+
+    /**
+    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
+    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
+
+    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
+    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
+
+    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
+    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
+
+    widgetInfo.ClearWidget();
+    widgetMessage.ClearWidget();
+    widgetInput.ClearWidget();
+
+    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
+    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), frameMessage.GetFrameSize());
+    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
+
+    widgetInfo.DisplayWidget();
+    widgetMessage.DisplayWidget();
+    widgetInput.DisplayWidget();
+    **/
+
+    HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
+
+    if (waitEvent != NULL)
+    {
+        WaitForSingleObject(waitEvent, INFINITE);
+        CloseHandle(waitEvent);
+    }
+
+    return exit_code;
+}
+
+Frame CreateMainScreen(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    COORD offset{ 0, 0 };
+    BorderShape border(COORD{ frameSize.X, 10 });
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X,
+                                static_cast<short>(frameSize.Y - border.GetSize().Y * 2) });
+    text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X, 10 });
+    text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    return frame;
+}
+
+Frame CreateInfoFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
 
     return frame;
 }
