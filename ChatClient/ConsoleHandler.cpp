@@ -2,8 +2,10 @@
 
 ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
     m_consoleOutput(GetStdHandle(STD_OUTPUT_HANDLE)),
-    m_consoleInput(GetStdHandle(STD_INPUT_HANDLE))
+    m_consoleInput(GetStdHandle(STD_INPUT_HANDLE)),
+    m_eventHandler(new EventHandler(m_consoleInput, m_consoleOutput))
 {
+    //Check validity of std_out handle
     if (m_consoleOutput == INVALID_HANDLE_VALUE)
     {
         std::stringstream errorMessage;
@@ -14,6 +16,7 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
+    //Check validity of std_in handle
     if (m_consoleInput == INVALID_HANDLE_VALUE)
     {
         std::stringstream errorMessage;
@@ -24,6 +27,7 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
+    //Get console screen buffer info
     if (GetConsoleScreenBufferInfo(m_consoleOutput, &m_consoleBufferInfo) == FALSE)
     {
         std::stringstream errorMessage;
@@ -34,6 +38,7 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
+    //Set console size
     if (SetConsoleSize(consoleSize) == FALSE)
     {
         std::stringstream errorMessage;
@@ -43,11 +48,33 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
 
         throw std::exception(errorMessage.str().c_str());
     }
+
+    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
+    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
+    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
+
+    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
+    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
+    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), 
+                             frameMessage.GetFrameSize());
+
+    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
+    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
+    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
+
+    AddWidget(widgetInfo);
+    AddWidget(widgetMessage);
+    AddWidget(widgetInput);
+
+    //
+    //m_eventHandler->Observe(new InputWidget(m_widgetList.back()));
+    m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, this);
 }
 
 ConsoleHandler::~ConsoleHandler()
 {
-
+    StopEventHandling();
+    m_eventHandlingThread.join();
 }
 
 HANDLE ConsoleHandler::GetWinAPIConsoleInputHandler()
@@ -173,24 +200,98 @@ BOOL ConsoleHandler::AddWidget(const Widget& widget)
     return result;
 }
 
-/**
-BOOL ConsoleHandler::Write(const wchar_t* bufferToWrite,
-                           const COORD& bufferSize,
-                           const COORD& insertionTopLeft,
-                           DWORD& bytesWritten)
+void ConsoleHandler::StartEventHandling()
 {
-    if ((m_consoleBufferInfo.dwSize.X < bufferSize.X) ||
-        (m_consoleBufferInfo.dwSize.Y < bufferSize.Y))
+    m_isEventHandlingOn = true;
+
+    while (m_isEventHandlingOn == true)
     {
-        return FALSE;
+        m_eventHandler->CatchEvent();
+        m_eventHandler->ProcessEvent();
     }
-
-    BOOL result = WriteConsoleOutputCharacter(m_consoleOutput,
-                                              bufferToWrite,
-                                              bufferSize.X * bufferSize.Y,
-                                              insertionTopLeft,
-                                              &bytesWritten);
-
-    return result;
 }
-**/
+
+void ConsoleHandler::StopEventHandling()
+{
+    m_isEventHandlingOn = false;
+}
+
+Frame ConsoleHandler::CreateMainScreen(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    COORD offset{ 0, 0 };
+    BorderShape border(COORD{ frameSize.X, 10 });
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X,
+                                static_cast<short>(frameSize.Y - border.GetSize().Y * 2) });
+    text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X, 10 });
+    text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    return frame;
+}
+
+Frame ConsoleHandler::CreateInfoFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame ConsoleHandler::CreateMessageFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame ConsoleHandler::CreateInputFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}

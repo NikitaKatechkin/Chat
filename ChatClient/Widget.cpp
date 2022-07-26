@@ -27,6 +27,14 @@ Widget::Widget(const COORD& renderStartPoint, const COORD& widgetSize):
     }
 }
 
+Widget::Widget(const Widget& other):
+    m_widgetFrame(other.m_widgetFrame)
+{
+    m_consoleInput = other.m_consoleInput;
+    m_consoleOutput = other.m_consoleOutput;
+    m_renderStartPoint = other.m_renderStartPoint;
+}
+
 HANDLE Widget::GetWinAPIConsoleInputHandler() const
 {
 	return m_consoleInput;

@@ -520,6 +520,7 @@ int main()
 {
     int exit_code = 0;
 
+    /**
     Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
     auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
     widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
@@ -531,14 +532,17 @@ int main()
     InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
     auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
     widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
+    **/
 
     ConsoleHandler console(COORD{ 80, 40 });
 
+    /**
     console.Clear();
 
     console.AddWidget(widgetInfo);
     console.AddWidget(widgetMessage);
     console.AddWidget(widgetInput);
+    **/
 
     console.Display();
 

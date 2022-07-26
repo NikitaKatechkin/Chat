@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Console\Widgets">
       <UniqueIdentifier>{9fc6111d-6d04-49d4-a225-26268c2e4507}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Console\Widgets\InputWidget">
+      <UniqueIdentifier>{5e2f6384-2f08-4cd1-b956-5268dbedbf2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -75,6 +78,9 @@
     <ClCompile Include="InputWidget.cpp">
       <Filter>Source Files\Console\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="Publisher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleHandler.h">
@@ -101,8 +107,14 @@
     <ClInclude Include="Widget.h">
       <Filter>Header Files\Console\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="Subscriber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Publisher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="InputWidget.h">
-      <Filter>Header Files\Console\Widgets</Filter>
+      <Filter>Header Files\Console\Widgets\InputWidget</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

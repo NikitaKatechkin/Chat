@@ -20,14 +20,6 @@ public:
 	ConsoleEventHandler& operator=(const ConsoleEventHandler& other) = delete;
 
 protected:
-	virtual void EventProc(INPUT_RECORD& inputEvent) override;
-	virtual void KeyEventProc(KEY_EVENT_RECORD& ker) override;
-	virtual void ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD& wbsr) override;
-	virtual void MouseEventProc(MOUSE_EVENT_RECORD& mer) override;
-	virtual void FocusEventProc(FOCUS_EVENT_RECORD& fer) override;
-	virtual void MenuEventProc(MENU_EVENT_RECORD& mer) override;
-
-protected:
 	COORD GetCursorPosition() const;
 	void SetCursorPosition(const COORD& newPos);
 

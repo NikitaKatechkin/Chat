@@ -1,18 +1,20 @@
 #pragma once
 
-#include "ConsoleEventHandler.h"
+//#include "ConsoleEventHandler.h"
 #include "Frame.h"
 #include "InputWidget.h"
+#include "BorderShape.h"
+#include "EventHandler.h"
 
 #include <windows.h>
 #include <sstream>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 class ConsoleHandler
 {
 public:
-	//ConsoleHandler(const bool makeActive);
 	ConsoleHandler(const COORD& consoleSize = COORD {80, 30});
 	~ConsoleHandler();
 
@@ -37,12 +39,17 @@ private:
 
 private:
 	std::vector<Widget> m_widgetList;
-private:
-	/**
-	BOOL Write(const wchar_t* bufferToWrite,
-			   const COORD& bufferSize,
-			   const COORD& insertionTopLeft,
-			   DWORD& bytesWritten);
-	**/
 
+private:
+	std::unique_ptr<EventHandler> m_eventHandler;
+	std::thread m_eventHandlingThread;
+	bool m_isEventHandlingOn;
+
+	void StartEventHandling();
+	void StopEventHandling();
+private:
+	static Frame CreateMainScreen(const COORD& frameSize);
+	static Frame CreateInfoFrame(const COORD& frameSize);
+	static Frame CreateMessageFrame(const COORD& frameSize);
+	static Frame CreateInputFrame(const COORD& frameSize);
 };
