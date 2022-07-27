@@ -62,3 +62,26 @@ void EventHandler::ProcessEvent()
         m_eventQueue.pop();
     }
 }
+
+void EventHandler::ServiceStartEventHandling()
+{
+    m_isEventHandlingStarted = true;
+
+    while (m_isEventHandlingStarted == true)
+    {
+        CatchEvent();
+        ProcessEvent();
+    }
+}
+
+void EventHandler::StartEventHandling()
+{
+    m_eventHandlingThread = std::thread(&EventHandler::ServiceStartEventHandling, 
+                                        this);
+}
+
+void EventHandler::StopEventHandling()
+{
+    m_isEventHandlingStarted = false;
+    m_eventHandlingThread.join();
+}

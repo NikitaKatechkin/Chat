@@ -505,6 +505,7 @@ Frame CreateInputFrame(const COORD& frameSize)
 }
 **/
 
+/**
 #include "ConsoleHandler.h"
 #include "Widget.h"
 #include "InputWidget.h"
@@ -523,6 +524,176 @@ int main()
     ConsoleHandler console(COORD{ 80, 40 });
 
     console.Display();
+
+    return exit_code;
+}
+
+Frame CreateMainScreen(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    COORD offset{ 0, 0 };
+    BorderShape border(COORD{ frameSize.X, 10 });
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X,
+                                static_cast<short>(frameSize.Y - border.GetSize().Y * 2) });
+    text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    offset.Y += border.GetSize().Y;
+    border = BorderShape(COORD{ border.GetSize().X, 10 });
+    text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), offset);
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ static_cast<short>(offset.X + 1), static_cast<short>(offset.Y + 1) });
+
+    return frame;
+}
+
+Frame CreateInfoFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"PROGRAMM INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame CreateMessageFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"LIVE CHAT INFO ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+
+Frame CreateInputFrame(const COORD& frameSize)
+{
+    Frame frame(frameSize);
+
+    BorderShape border(frameSize);
+    std::wstring text = L"INPUT ZONE HERE";
+
+    frame.PasteShape(border.GetBuffer(), border.GetSize(), COORD{ 0, 0 });
+    frame.PasteShape(text.c_str(),
+        COORD{ static_cast<short>(text.length()), 1 },
+        COORD{ 1, 1 });
+
+    return frame;
+}
+**/
+
+#include "Widget.h"
+#include "EventHandler.h"
+#include "InputWidget.h"
+#include "Frame.h"
+#include "BorderShape.h"
+
+Frame CreateMainScreen(const COORD& frameSize);
+Frame CreateInfoFrame(const COORD& frameSize);
+Frame CreateMessageFrame(const COORD& frameSize);
+Frame CreateInputFrame(const COORD& frameSize);
+
+int main()
+{
+    int exit_code = 0;
+
+    HANDLE std_in = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE std_out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    if (std_in != INVALID_HANDLE_VALUE)
+    {
+        DWORD savedOldConsoleMode;
+        if (GetConsoleMode(std_in, &savedOldConsoleMode) == TRUE)
+        {
+            if (SetConsoleMode(std_in, (ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) == TRUE)
+            {
+                {
+                    COORD consoleSize = COORD{ 80, 30 };
+                    SMALL_RECT windowSize = { 0, 
+                                              0, 
+                                              consoleSize.X - 1, 
+                                              consoleSize.Y - 1 };
+
+                    SetConsoleWindowInfo(std_out, TRUE, &windowSize);
+                    SetConsoleScreenBufferSize(std_out, consoleSize);
+                }
+                
+                const COORD widgetSize = COORD{ 80, 10 };
+
+                EventHandler eventHandler(std_in, std_out);
+
+                eventHandler.StartEventHandling();
+
+                Widget widgetInfo(CreateInfoFrame(widgetSize),
+                                  COORD{ 0, 0 },
+                                  widgetSize);
+
+                Widget widgetMessage(CreateMessageFrame(widgetSize), 
+                                     COORD{ 0, 10 }, 
+                                     widgetSize);
+
+                InputWidget widgetInput(CreateInputFrame(widgetSize), 
+                                        COORD{ 0, 20 }, 
+                                        widgetSize);
+
+                eventHandler.Observe(&widgetInput);
+
+                HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
+
+                if (waitEvent != NULL)
+                {
+                    WaitForSingleObject(waitEvent, INFINITE);
+                    CloseHandle(waitEvent);
+                }
+
+                eventHandler.StopEventHandling();
+
+                SetConsoleMode(std_in, savedOldConsoleMode);
+            }
+            else
+            {
+                std::cout << "Failed to change console mode." << std::endl;
+                exit_code = -1;
+            }
+        }
+        else
+        {
+            std::cout << "Failed to save console mode." << std::endl;
+            exit_code = -1;
+        }
+    }
+    else
+    {
+        std::cout << "Failed to get console handle." << std::endl;
+        exit_code = -1;
+    }
 
     return exit_code;
 }

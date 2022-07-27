@@ -7,6 +7,7 @@
 #include <queue>
 #include <iostream>
 #include <mutex>
+#include <thread>
 
 class EventHandler : public Publisher
 {
@@ -32,5 +33,16 @@ protected:
 protected:
 	HANDLE m_eventSource = INVALID_HANDLE_VALUE;
 	HANDLE m_outputEventSource = INVALID_HANDLE_VALUE;
+
+protected:
+	std::thread m_eventHandlingThread;
+	bool m_isEventHandlingStarted = false;
+
+protected:
+	void ServiceStartEventHandling();
+
+public:
+	void StartEventHandling();
+	void StopEventHandling();
 
 };

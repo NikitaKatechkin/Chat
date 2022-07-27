@@ -61,7 +61,8 @@ Widget::Widget(const Frame& widgetFrame,
     if ((ownWidgetFrameSize.X == newWidgetFrameSize.X) &&
         (ownWidgetFrameSize.Y == newWidgetFrameSize.Y))
     {
-        m_widgetFrame = widgetFrame;
+        DrawWidget(widgetFrame.GetFrameBuffer(), widgetFrame.GetFrameSize());
+        DisplayWidget();
     }
 }
 
