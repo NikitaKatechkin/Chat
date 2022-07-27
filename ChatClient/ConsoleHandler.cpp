@@ -49,25 +49,25 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
-    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
-    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
-    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
+    Widget* widgetInfo = new Widget(COORD{ 0, 0 }, COORD{ 80, 10 });
+    auto frameInfo = CreateInfoFrame(widgetInfo->GetWidgetSize());
+    widgetInfo->DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
 
-    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
-    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
-    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), 
+    Widget* widgetMessage = new Widget(COORD{ 0, 10 }, COORD{ 80, 10 });
+    auto frameMessage = CreateMessageFrame(widgetMessage->GetWidgetSize());
+    widgetMessage->DrawWidget(frameMessage.GetFrameBuffer(), 
                              frameMessage.GetFrameSize());
 
-    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
-    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
-    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
+    InputWidget* widgetInput = new InputWidget(COORD{ 0, 20 }, COORD{ 80, 10 });
+    auto frameInput = CreateInputFrame(widgetInput->GetWidgetSize());
+    widgetInput->DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
 
     AddWidget(widgetInfo);
     AddWidget(widgetMessage);
     AddWidget(widgetInput);
 
-    //
-    //m_eventHandler->Observe(new InputWidget(m_widgetList.back()));
+    
+    m_eventHandler->Observe(dynamic_cast<InputWidget*>(m_widgetList.back()));
     m_eventHandlingThread = std::thread(&ConsoleHandler::StartEventHandling, this);
 }
 
@@ -75,6 +75,11 @@ ConsoleHandler::~ConsoleHandler()
 {
     StopEventHandling();
     m_eventHandlingThread.join();
+
+    for (size_t index = 0; index < m_widgetList.size(); index++)
+    {
+        delete m_widgetList[index];
+    }
 }
 
 HANDLE ConsoleHandler::GetWinAPIConsoleInputHandler()
@@ -133,7 +138,7 @@ void ConsoleHandler::Clear()
 {
     for (auto& widget : m_widgetList)
     {
-        widget.ClearWidget();
+        widget->ClearWidget();
     }
 }
 
@@ -148,7 +153,7 @@ BOOL ConsoleHandler::Display()
 
     for (auto& widget : m_widgetList)
     {
-        result = widget.DisplayWidget();
+        result = widget->DisplayWidget();
         if (result == FALSE)
         {
             break;
@@ -166,7 +171,7 @@ BOOL ConsoleHandler::Update()
     {
         for (auto& widget : m_widgetList)
         {
-            widget.Update();
+            widget->Update();
         }
         
         Clear();
@@ -175,10 +180,10 @@ BOOL ConsoleHandler::Update()
     return result;
 }
 
-BOOL ConsoleHandler::AddWidget(const Widget& widget)
+BOOL ConsoleHandler::AddWidget(Widget* widget)
 {
-    COORD widgetSize = widget.GetWidgetSize();
-    COORD startRenderPoint = widget.GetRenderStartPoint();
+    COORD widgetSize = widget->GetWidgetSize();
+    COORD startRenderPoint = widget->GetRenderStartPoint();
 
     BOOL result = (startRenderPoint.Y + widgetSize.Y <= m_consoleBufferInfo.dwSize.Y);
 
@@ -186,8 +191,8 @@ BOOL ConsoleHandler::AddWidget(const Widget& widget)
     {
         auto lastWidget = m_widgetList.back();
 
-        COORD lastWidgetSize = lastWidget.GetWidgetSize();
-        COORD lastStartRenderPoint = lastWidget.GetRenderStartPoint();
+        COORD lastWidgetSize = lastWidget->GetWidgetSize();
+        COORD lastStartRenderPoint = lastWidget->GetRenderStartPoint();
 
         result = (startRenderPoint.Y >= lastStartRenderPoint.Y + lastWidgetSize.Y);
     }

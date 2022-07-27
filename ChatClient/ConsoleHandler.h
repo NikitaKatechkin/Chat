@@ -31,14 +31,15 @@ public:
 	BOOL Update();
 
 public:
-	BOOL AddWidget(const Widget& widget);
+	BOOL AddWidget(Widget* widget);
+
 private:
 	HANDLE m_consoleOutput = INVALID_HANDLE_VALUE;
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;
 	CONSOLE_SCREEN_BUFFER_INFO m_consoleBufferInfo;
 
 private:
-	std::vector<Widget> m_widgetList;
+	std::vector<Widget*> m_widgetList;
 
 private:
 	std::unique_ptr<EventHandler> m_eventHandler;

@@ -7,6 +7,14 @@ InputWidget::InputWidget(const COORD& renderStartPoint,
 	
 }
 
+InputWidget::InputWidget(const Frame& widgetFrame, 
+                         const COORD& renderStartPoint, 
+                         const COORD& widgetSize):
+    Widget(widgetFrame, renderStartPoint, widgetSize)
+{
+}
+
+/**
 InputWidget::InputWidget(const InputWidget& other):
     Widget(other)
 {
@@ -16,6 +24,7 @@ InputWidget::InputWidget(const Widget& other):
     Widget(other)
 {
 }
+**/
 
 InputWidget::~InputWidget()
 {

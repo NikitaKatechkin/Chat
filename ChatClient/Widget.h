@@ -12,7 +12,13 @@ class Widget
 public:
 	Widget(const COORD& renderStartPoint = COORD{0, 0}, 
 		   const COORD& widgetSize = COORD{80, 30});
-	Widget(const Widget& other);
+
+	Widget(const Frame& widgetFrame, 
+		   const COORD& renderStartPoint = COORD{ 0, 0 },
+		   const COORD& widgetSize = COORD{ 80, 30 });
+
+	Widget(const Widget& other) = delete;
+
 	virtual ~Widget() = default;
 
 	virtual HANDLE GetWinAPIConsoleInputHandler() const;

@@ -11,8 +11,13 @@ class InputWidget final : public Widget,
 public:
 	InputWidget(const COORD& renderStartPoint = COORD{ 0, 0 },
 				const COORD& widgetSize = COORD{ 80, 30 });
-	InputWidget(const InputWidget& other);
-	InputWidget(const Widget& other);
+
+	InputWidget(const Frame& widgetFrame,
+				const COORD& renderStartPoint = COORD{ 0, 0 },
+				const COORD& widgetSize = COORD{ 80, 30 });
+
+	InputWidget(const InputWidget& other) = delete;
+	InputWidget(const Widget& other) = delete;
 	virtual ~InputWidget();
 
 private:
@@ -23,8 +28,10 @@ private:
 	COORD GetCursorPosition() const;
 	void SetCursorPosition(const COORD& newPos);
 
+private:
 	void PrintCharacterToConsoleFrame(const wchar_t& character);
 	void DeleteCharacterFromConsoleFrame();
+
 private:
 	virtual void EventProc(INPUT_RECORD& inputEvent);
 	virtual void KeyEventProc(KEY_EVENT_RECORD& ker);

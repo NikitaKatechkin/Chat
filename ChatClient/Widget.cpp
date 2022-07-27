@@ -27,6 +27,45 @@ Widget::Widget(const COORD& renderStartPoint, const COORD& widgetSize):
     }
 }
 
+Widget::Widget(const Frame& widgetFrame, 
+               const COORD& renderStartPoint, 
+               const COORD& widgetSize):
+    m_renderStartPoint(renderStartPoint),
+    m_widgetFrame(widgetSize),
+    m_consoleInput(GetStdHandle(STD_INPUT_HANDLE)),
+    m_consoleOutput(GetStdHandle(STD_OUTPUT_HANDLE))
+{
+    if (m_consoleOutput == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to CreateConsoleScreenBuffer with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    if (m_consoleInput == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Failed to CreateConsoleScreenBuffer with GLE = ";
+        errorMessage << GetLastError() << "." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    COORD ownWidgetFrameSize = m_widgetFrame.GetFrameSize();
+    COORD newWidgetFrameSize = widgetFrame.GetFrameSize();
+
+    if ((ownWidgetFrameSize.X == newWidgetFrameSize.X) &&
+        (ownWidgetFrameSize.Y == newWidgetFrameSize.Y))
+    {
+        m_widgetFrame = widgetFrame;
+    }
+}
+
+/**
 Widget::Widget(const Widget& other):
     m_widgetFrame(other.m_widgetFrame)
 {
@@ -34,6 +73,7 @@ Widget::Widget(const Widget& other):
     m_consoleOutput = other.m_consoleOutput;
     m_renderStartPoint = other.m_renderStartPoint;
 }
+**/
 
 HANDLE Widget::GetWinAPIConsoleInputHandler() const
 {

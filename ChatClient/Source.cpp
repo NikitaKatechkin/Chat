@@ -520,62 +520,9 @@ int main()
 {
     int exit_code = 0;
 
-    /**
-    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
-    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
-    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
-
-    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
-    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
-    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), frameMessage.GetFrameSize());
-
-    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
-    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
-    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
-    **/
-
     ConsoleHandler console(COORD{ 80, 40 });
 
-    /**
-    console.Clear();
-
-    console.AddWidget(widgetInfo);
-    console.AddWidget(widgetMessage);
-    console.AddWidget(widgetInput);
-    **/
-
     console.Display();
-
-    /**
-    Widget widgetInfo(COORD{ 0, 0 }, COORD{ 80, 10 });
-    auto frameInfo = CreateInfoFrame(widgetInfo.GetWidgetSize());
-
-    Widget widgetMessage(COORD{ 0, 10 }, COORD{ 80, 10 });
-    auto frameMessage = CreateMessageFrame(widgetMessage.GetWidgetSize());
-
-    InputWidget widgetInput(COORD{ 0, 20 }, COORD{ 80, 10 });
-    auto frameInput = CreateInputFrame(widgetInput.GetWidgetSize());
-
-    widgetInfo.ClearWidget();
-    widgetMessage.ClearWidget();
-    widgetInput.ClearWidget();
-
-    widgetInfo.DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
-    widgetMessage.DrawWidget(frameMessage.GetFrameBuffer(), frameMessage.GetFrameSize());
-    widgetInput.DrawWidget(frameInput.GetFrameBuffer(), frameInput.GetFrameSize());
-
-    widgetInfo.DisplayWidget();
-    widgetMessage.DisplayWidget();
-    widgetInput.DisplayWidget();
-    **/
-
-    HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
-
-    if (waitEvent != NULL)
-    {
-        WaitForSingleObject(waitEvent, INFINITE);
-        CloseHandle(waitEvent);
-    }
 
     return exit_code;
 }

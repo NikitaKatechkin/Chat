@@ -43,9 +43,6 @@
     <Filter Include="Source Files\Console\Widgets">
       <UniqueIdentifier>{9fc6111d-6d04-49d4-a225-26268c2e4507}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Console\Widgets\InputWidget">
-      <UniqueIdentifier>{5e2f6384-2f08-4cd1-b956-5268dbedbf2f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -114,7 +111,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputWidget.h">
-      <Filter>Header Files\Console\Widgets\InputWidget</Filter>
+      <Filter>Header Files\Console\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
