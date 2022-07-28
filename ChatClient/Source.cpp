@@ -647,23 +647,24 @@ int main()
                 
                 const COORD widgetSize = COORD{ 80, 10 };
 
-                EventHandler eventHandler(std_in, std_out);
+                EventHandler* eventHandler = new EventHandler(std_in, std_out);
 
-                eventHandler.StartEventHandling();
+                eventHandler->StartEventHandling();
 
-                Widget widgetInfo(CreateInfoFrame(widgetSize),
-                                  COORD{ 0, 0 },
-                                  widgetSize);
+                Widget* widgetInfo = new Widget(CreateInfoFrame(widgetSize),
+                                                COORD{ 0, 0 },
+                                                widgetSize);
 
-                Widget widgetMessage(CreateMessageFrame(widgetSize), 
-                                     COORD{ 0, 10 }, 
-                                     widgetSize);
+                Widget* widgetMessage = new Widget(CreateMessageFrame(widgetSize), 
+                                                   COORD{ 0, 10 }, 
+                                                   widgetSize);
 
-                InputWidget widgetInput(CreateInputFrame(widgetSize), 
-                                        COORD{ 0, 20 }, 
-                                        widgetSize);
+                InputWidget* widgetInput = new InputWidget(
+                                                    CreateInputFrame(widgetSize), 
+                                                    COORD{ 0, 20 }, 
+                                                    widgetSize);
 
-                eventHandler.Observe(&widgetInput);
+                eventHandler->Observe(widgetInput);
 
                 HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
 
@@ -673,7 +674,13 @@ int main()
                     CloseHandle(waitEvent);
                 }
 
-                eventHandler.StopEventHandling();
+                eventHandler->StopEventHandling();
+
+                delete eventHandler;
+
+                delete widgetInfo;
+                delete widgetMessage;
+                delete widgetInput;
 
                 SetConsoleMode(std_in, savedOldConsoleMode);
             }
