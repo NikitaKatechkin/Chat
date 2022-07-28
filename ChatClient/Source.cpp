@@ -668,10 +668,12 @@ int main()
                                                                                          widgetSize);
                 **/
 
-                std::shared_ptr<TextWidget> widgetInfo = std::make_shared<TextWidget>(COORD{ 0, 0 },
+                std::shared_ptr<TextWidget> widgetInfo = std::make_shared<TextWidget>(L"CHAT ROOM IP =", 
+                                                                              COORD{0, 0},
                                                                               widgetSize);
 
-                std::shared_ptr<TextWidget> widgetMessage = std::make_shared<TextWidget>(COORD{ 0, 10 },
+                std::shared_ptr<TextWidget> widgetMessage = std::make_shared<TextWidget>(L"NICK: HI",
+                                                                                 COORD{ 0, 10 },
                                                                                  widgetSize);
 
                 std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(COORD{ 0, 20 }, 
