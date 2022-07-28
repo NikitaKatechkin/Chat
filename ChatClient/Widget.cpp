@@ -1,6 +1,8 @@
 #include "Widget.h"
 
-Widget::Widget(const COORD& renderStartPoint, const COORD& widgetSize):
+Widget::Widget(const COORD& renderStartPoint, 
+               const COORD& widgetSize, 
+               const bool drawBorders):
 	m_renderStartPoint(renderStartPoint),
 	m_widgetFrame(widgetSize), 
 	m_consoleInput(GetStdHandle(STD_INPUT_HANDLE)),
@@ -24,6 +26,15 @@ Widget::Widget(const COORD& renderStartPoint, const COORD& widgetSize):
         errorMessage << GetLastError() << "." << std::endl;
 
         throw std::exception(errorMessage.str().c_str());
+    }
+
+    if (drawBorders == true)
+    {
+        std::shared_ptr<BorderShape> border = std::make_shared<BorderShape>(
+                                                    m_widgetFrame.GetFrameSize());
+
+        DrawWidget(border->GetBuffer(), border->GetSize());
+        DisplayWidget();
     }
 }
 
@@ -142,9 +153,4 @@ BOOL Widget::DisplayWidget() const
                                               &bytesWritten);
 
     return result;
-}
-
-BOOL Widget::Update()
-{
-    return TRUE;
 }

@@ -78,11 +78,11 @@
     <ClCompile Include="Publisher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleHandler.h">
-      <Filter>Header Files\Console</Filter>
-    </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Header Files\Console</Filter>
     </ClInclude>
@@ -112,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="InputWidget.h">
       <Filter>Header Files\Console\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="TextWidget.h">
+      <Filter>Header Files\Console\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleHandler.h">
+      <Filter>Header Files\Console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

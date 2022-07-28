@@ -612,6 +612,7 @@ Frame CreateInputFrame(const COORD& frameSize)
 #include "Widget.h"
 #include "EventHandler.h"
 #include "InputWidget.h"
+#include "TextWidget.h"
 #include "Frame.h"
 #include "BorderShape.h"
 
@@ -653,6 +654,7 @@ int main()
 
                 eventHandler->StartEventHandling();
 
+                /**
                 std::shared_ptr<Widget> widgetInfo = std::make_shared<Widget>(CreateInfoFrame(widgetSize),
                                                                               COORD{ 0, 0 },
                                                                               widgetSize);
@@ -663,6 +665,16 @@ int main()
 
                 std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(CreateInputFrame(widgetSize), 
                                                                                          COORD{ 0, 20 }, 
+                                                                                         widgetSize);
+                **/
+
+                std::shared_ptr<TextWidget> widgetInfo = std::make_shared<TextWidget>(COORD{ 0, 0 },
+                                                                              widgetSize);
+
+                std::shared_ptr<TextWidget> widgetMessage = std::make_shared<TextWidget>(COORD{ 0, 10 },
+                                                                                 widgetSize);
+
+                std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(COORD{ 0, 20 }, 
                                                                                          widgetSize);
 
                 eventHandler->Observe(widgetInput.get());
@@ -676,12 +688,6 @@ int main()
                 }
 
                 eventHandler->StopEventHandling();
-
-                //delete eventHandler;
-
-                //delete widgetInfo;
-                //delete widgetMessage;
-                //delete widgetInput;
 
                 SetConsoleMode(std_in, savedOldConsoleMode);
             }

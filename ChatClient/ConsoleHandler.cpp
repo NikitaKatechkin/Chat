@@ -49,11 +49,11 @@ ConsoleHandler::ConsoleHandler(const COORD& consoleSize):
         throw std::exception(errorMessage.str().c_str());
     }
 
-    Widget* widgetInfo = new Widget(COORD{ 0, 0 }, COORD{ 80, 10 });
+    TextWidget* widgetInfo = new TextWidget(COORD{ 0, 0 }, COORD{ 80, 10 });
     auto frameInfo = CreateInfoFrame(widgetInfo->GetWidgetSize());
     widgetInfo->DrawWidget(frameInfo.GetFrameBuffer(), frameInfo.GetFrameSize());
 
-    Widget* widgetMessage = new Widget(COORD{ 0, 10 }, COORD{ 80, 10 });
+    TextWidget* widgetMessage = new TextWidget(COORD{ 0, 10 }, COORD{ 80, 10 });
     auto frameMessage = CreateMessageFrame(widgetMessage->GetWidgetSize());
     widgetMessage->DrawWidget(frameMessage.GetFrameBuffer(), 
                              frameMessage.GetFrameSize());

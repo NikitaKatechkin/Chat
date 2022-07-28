@@ -3,6 +3,7 @@
 //#include "ConsoleEventHandler.h"
 #include "Frame.h"
 #include "InputWidget.h"
+#include "TextWidget.h"
 #include "BorderShape.h"
 #include "EventHandler.h"
 

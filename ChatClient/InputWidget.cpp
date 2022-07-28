@@ -1,8 +1,9 @@
 #include "InputWidget.h"
 
 InputWidget::InputWidget(const COORD& renderStartPoint, 
-						 const COORD& widgetSize):
-	Widget(renderStartPoint, widgetSize)
+						 const COORD& widgetSize,
+                         const bool drawBorders):
+	Widget(renderStartPoint, widgetSize, drawBorders)
 {
 	
 }
@@ -33,7 +34,7 @@ InputWidget::~InputWidget()
 
 BOOL InputWidget::Update()
 {
-	return 0;
+	return TRUE;
 }
 
 void InputWidget::Update(INPUT_RECORD& inputEvent)

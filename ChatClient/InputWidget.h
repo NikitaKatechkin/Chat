@@ -10,7 +10,8 @@ class InputWidget final : public Widget,
 {
 public:
 	InputWidget(const COORD& renderStartPoint = COORD{ 0, 0 },
-				const COORD& widgetSize = COORD{ 80, 30 });
+				const COORD& widgetSize = COORD{ 80, 30 },
+				const bool drawBorders = true);
 
 	InputWidget(const Frame& widgetFrame,
 				const COORD& renderStartPoint = COORD{ 0, 0 },

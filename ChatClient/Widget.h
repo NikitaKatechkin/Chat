@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Frame.h"
+#include "BorderShape.h"
 
 #include <Windows.h>
 #include <sstream>
@@ -11,7 +12,8 @@ class Widget
 {
 public:
 	Widget(const COORD& renderStartPoint = COORD{0, 0}, 
-		   const COORD& widgetSize = COORD{80, 30});
+		   const COORD& widgetSize = COORD{80, 30},
+		   const bool drawBorders = true);
 
 	Widget(const Frame& widgetFrame, 
 		   const COORD& renderStartPoint = COORD{ 0, 0 },
@@ -35,7 +37,7 @@ public:
 							const COORD& bufferSize);
 	virtual BOOL DisplayWidget() const;
 
-	virtual BOOL Update();
+	virtual BOOL Update() = 0;
 
 protected:
 	HANDLE m_consoleInput = INVALID_HANDLE_VALUE;
