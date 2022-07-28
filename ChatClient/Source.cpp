@@ -615,6 +615,8 @@ Frame CreateInputFrame(const COORD& frameSize)
 #include "Frame.h"
 #include "BorderShape.h"
 
+#include <memory>
+
 Frame CreateMainScreen(const COORD& frameSize);
 Frame CreateInfoFrame(const COORD& frameSize);
 Frame CreateMessageFrame(const COORD& frameSize);
@@ -647,24 +649,23 @@ int main()
                 
                 const COORD widgetSize = COORD{ 80, 10 };
 
-                EventHandler* eventHandler = new EventHandler(std_in, std_out);
+                std::shared_ptr<EventHandler> eventHandler = std::make_shared<EventHandler>(std_in, std_out);
 
                 eventHandler->StartEventHandling();
 
-                Widget* widgetInfo = new Widget(CreateInfoFrame(widgetSize),
-                                                COORD{ 0, 0 },
-                                                widgetSize);
+                std::shared_ptr<Widget> widgetInfo = std::make_shared<Widget>(CreateInfoFrame(widgetSize),
+                                                                              COORD{ 0, 0 },
+                                                                              widgetSize);
 
-                Widget* widgetMessage = new Widget(CreateMessageFrame(widgetSize), 
-                                                   COORD{ 0, 10 }, 
-                                                   widgetSize);
+                std::shared_ptr<Widget> widgetMessage = std::make_shared<Widget>(CreateMessageFrame(widgetSize),
+                                                                                 COORD{ 0, 10 }, 
+                                                                                 widgetSize);
 
-                InputWidget* widgetInput = new InputWidget(
-                                                    CreateInputFrame(widgetSize), 
-                                                    COORD{ 0, 20 }, 
-                                                    widgetSize);
+                std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(CreateInputFrame(widgetSize), 
+                                                                                         COORD{ 0, 20 }, 
+                                                                                         widgetSize);
 
-                eventHandler->Observe(widgetInput);
+                eventHandler->Observe(widgetInput.get());
 
                 HANDLE waitEvent = CreateEvent(nullptr, TRUE, FALSE, L"KeepWaitingEvent");
 
@@ -676,11 +677,11 @@ int main()
 
                 eventHandler->StopEventHandling();
 
-                delete eventHandler;
+                //delete eventHandler;
 
-                delete widgetInfo;
-                delete widgetMessage;
-                delete widgetInput;
+                //delete widgetInfo;
+                //delete widgetMessage;
+                //delete widgetInput;
 
                 SetConsoleMode(std_in, savedOldConsoleMode);
             }
