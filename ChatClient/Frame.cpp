@@ -49,22 +49,6 @@ COORD Frame::GetFrameSize() const
 
 wchar_t* Frame::GetFrameBuffer() const
 {
-	/**
-	wchar_t* bufferToWrite = new wchar_t[m_size.X * m_size.Y];
-
-	int result = memcpy_s(bufferToWrite, 
-						  m_size.X * m_size.Y * sizeof(wchar_t),
-						  m_frame,
-						  m_size.X * m_size.Y * sizeof(wchar_t));
-
-	if (result != 0)
-	{
-		delete[] bufferToWrite;
-		bufferToWrite = nullptr;
-	}
-
-	return bufferToWrite;
-	**/
 
 	return m_frame;
 }

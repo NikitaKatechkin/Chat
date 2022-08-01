@@ -13,6 +13,10 @@ public:
 	MessageWidget(const Frame& widgetFrame,
 				  const COORD& renderStartPoint = COORD{ 0, 0 },
 				  const COORD& widgetSize = COORD{ 80, 30 });
+
+public:
+	void PrintMessage(const std::wstring& message);
+
 private:
 	virtual BOOL Update() override;
 
@@ -30,6 +34,4 @@ private:
 private:
 	void MoveBufferOneLineAbove();
 
-public:
-	void PrintMessage(const std::wstring& message);
 };

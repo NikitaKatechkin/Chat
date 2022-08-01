@@ -13,6 +13,10 @@ public:
 	TextWidget(const Frame& widgetFrame,
 			   const COORD& renderStartPoint = COORD{ 0, 0 },
 			   const COORD& widgetSize = COORD{ 80, 30 });
+
+public:
+	void PrintText(const std::wstring& text);
+
 private:
 	virtual BOOL Update() override;
 
@@ -26,6 +30,4 @@ private:
 	void PrintCharacterToFrame(const wchar_t& character);
 	void DeleteCharacterFromFrame();
 
-public:
-	void PrintText(const std::wstring& text);
 };

@@ -6,8 +6,7 @@ TextWidget::TextWidget(const std::wstring& textToPrint,
 					   const bool drawBorders):
 	Widget(renderStartPoint, widgetSize, drawBorders)
 {
-    COORD startTextTypeposition = (drawBorders == true) ? COORD{ 1, 1 } : 
-                                                          COORD{ 0, 0 };
+    COORD startTextTypeposition = COORD{ 1, 1 };
     SetTextTypePosition(startTextTypeposition);
 
     PrintText(textToPrint);
@@ -20,7 +19,8 @@ TextWidget::TextWidget(const Frame& widgetFrame,
 					   const COORD& widgetSize):
 	Widget(widgetFrame, renderStartPoint, widgetSize)
 {
-    SetTextTypePosition(COORD{ 0, 0 });
+    COORD startTextTypeposition = COORD{ 1, 1 };
+    SetTextTypePosition(startTextTypeposition);
 }
 
 BOOL TextWidget::Update()

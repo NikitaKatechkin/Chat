@@ -8,29 +8,6 @@ EventHandler::EventHandler(const HANDLE& eventSource,
     
 }
 
-/**
-EventHandler::EventHandler(const EventHandler& other):
-    EventHandler(other.m_eventSource, other.m_outputEventSource)
-{
-    m_eventQueue = other.m_eventQueue;
-}
-
-EventHandler& EventHandler::operator=(const EventHandler& other)
-{
-    if (this == &other)
-    {
-        return *this;
-    }
-
-
-    this->m_eventQueue = other.m_eventQueue;
-    this->m_eventSource = other.m_eventSource;
-    this->m_outputEventSource = other.m_outputEventSource;
-
-    return *this;
-}
-**/
-
 void EventHandler::CatchEvent(const DWORD inputBufferSize)
 {
 	DWORD numberOccuredEvents = 0;

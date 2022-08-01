@@ -19,7 +19,7 @@ public:
 
 	InputWidget(const InputWidget& other) = delete;
 	InputWidget(const Widget& other) = delete;
-	virtual ~InputWidget();
+	virtual ~InputWidget() = default;
 
 private:
 	virtual BOOL Update() override;

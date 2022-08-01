@@ -5,8 +5,7 @@ MessageWidget::MessageWidget(const COORD& renderStartPoint,
 							 const bool drawBorders):
 	Widget(renderStartPoint, widgetSize, drawBorders)
 {
-    COORD startTextTypeposition = (drawBorders == true) ? COORD{ 1, 1 } :
-        COORD{ 1, 1 };
+    COORD startTextTypeposition = COORD{ 1, 1 };
     SetTextTypePosition(startTextTypeposition);
 }
 
@@ -15,7 +14,8 @@ MessageWidget::MessageWidget(const Frame& widgetFrame,
 							 const COORD& widgetSize):
 	Widget(widgetFrame, renderStartPoint, widgetSize)
 {
-    SetTextTypePosition(COORD{ 1, 1 });
+    COORD startTextTypeposition = COORD{ 1, 1 };
+    SetTextTypePosition(startTextTypeposition);
 }
 
 BOOL MessageWidget::Update()
@@ -137,30 +137,22 @@ void MessageWidget::MoveBufferOneLineAbove()
         m_widgetFrame.PasteShape(nextLineBuffer, 
                                  COORD {frameSize.X, 1}, 
                                  COORD {0, static_cast<short>(rowIndex)});
-        /**
-        size_t pasteLineOffset = (rowIndex) * frameSize.X;
-        for (size_t charIndex = pasteLineOffset; charIndex < pasteLineOffset + frameSize.X; charIndex++)
-        {
-            frameBuffer[charIndex] = nextLineBuffer[charIndex - pasteLineOffset];
-        }
-        **/
     }
 
-    std::fill_n(nextLineBuffer, frameSize.X, L' ');
-    nextLineBuffer[0] = frameBuffer[frameSize.X];
-    nextLineBuffer[frameSize.X - 1] = frameBuffer[2 * frameSize.X - 1];
+    {
+        // Clear last text row
 
-    m_widgetFrame.PasteShape(nextLineBuffer,
-                             COORD{ frameSize.X, 1 },
-                             COORD{ 0, static_cast<short>(frameSize.Y - 2) });
+        std::fill_n(nextLineBuffer, frameSize.X, L' ');
+        nextLineBuffer[0] = frameBuffer[frameSize.X];
+        nextLineBuffer[frameSize.X - 1] = frameBuffer[2 * frameSize.X - 1];
+
+        m_widgetFrame.PasteShape(nextLineBuffer,
+                                 COORD{ frameSize.X, 1 },
+                                 COORD{ 0, static_cast<short>(frameSize.Y - 2) });
+    }
 
     SetTextTypePosition(COORD{ m_textTypePosition.X,
                                static_cast<short>(m_textTypePosition.Y - 1) });
-
-    /**
-    m_renderStartPoint = COORD{m_renderStartPoint.X, 
-                               static_cast<short>(m_renderStartPoint.Y - 1)};
-    **/
 
     delete[] nextLineBuffer;
 
@@ -169,25 +161,26 @@ void MessageWidget::MoveBufferOneLineAbove()
 
 void MessageWidget::PrintMessage(const std::wstring& message)
 {
-    COORD frameSize = m_widgetFrame.GetFrameSize();
-
-    size_t linesRequired = message.size() / frameSize.X + 1;
-    size_t availableLines = (frameSize.Y - 2) - m_textTypePosition.Y + 1;
-
-    if (availableLines < linesRequired)
     {
-        for (size_t i = 0; i < (linesRequired - availableLines); i++)
+        //Free space for new message to be printed
+
+        COORD frameSize = m_widgetFrame.GetFrameSize();
+
+        size_t linesRequired = message.size() / frameSize.X + 1;
+        size_t availableLines = (frameSize.Y - 2) - m_textTypePosition.Y + 1;
+
+        if (availableLines < linesRequired)
         {
-            MoveBufferOneLineAbove();
+            for (size_t i = 0; i < (linesRequired - availableLines); i++)
+            {
+                MoveBufferOneLineAbove();
+            }
         }
     }
 
     PrintText(message);
 
-    //if (m_textTypePosition.Y < frameSize.Y - 2)
-    //{
-        MoveOnNextLine();
-    //}
+    MoveOnNextLine();
 
     DisplayWidget();
 }

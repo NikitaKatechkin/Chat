@@ -13,23 +13,7 @@ InputWidget::InputWidget(const Frame& widgetFrame,
                          const COORD& widgetSize):
     Widget(widgetFrame, renderStartPoint, widgetSize)
 {
-}
 
-/**
-InputWidget::InputWidget(const InputWidget& other):
-    Widget(other)
-{
-}
-
-InputWidget::InputWidget(const Widget& other):
-    Widget(other)
-{
-}
-**/
-
-InputWidget::~InputWidget()
-{
-	
 }
 
 BOOL InputWidget::Update()
@@ -39,7 +23,6 @@ BOOL InputWidget::Update()
 
 void InputWidget::Update(INPUT_RECORD& inputEvent)
 {
-	//Here should be eventProc
     EventProc(inputEvent);
 }
 
@@ -214,8 +197,6 @@ void InputWidget::KeyEventProc(KEY_EVENT_RECORD& ker)
         }
         }
 
-        //SetCursorPosition(COORD{ static_cast<short>(cursorPos.X + offset.X),
-        //                         static_cast<short>(cursorPos.Y + offset.Y) });
         DisplayWidget();
     }
     else

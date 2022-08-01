@@ -26,6 +26,10 @@ public:
 	void CatchEvent(const DWORD inputBufferSize = 12);
 	void ProcessEvent();
 
+public:
+	void StartEventHandling();
+	void StopEventHandling();
+
 protected:
 	std::queue<INPUT_RECORD> m_eventQueue;
 	std::mutex m_queueAccess;
@@ -40,9 +44,5 @@ protected:
 
 protected:
 	void ServiceStartEventHandling();
-
-public:
-	void StartEventHandling();
-	void StopEventHandling();
 
 };
