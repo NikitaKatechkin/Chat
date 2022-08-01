@@ -23,19 +23,19 @@ public:
 
 	virtual ~Widget() = default;
 
-	virtual HANDLE GetWinAPIConsoleInputHandler() const;
-	virtual HANDLE GetWinAPIConsoleOutputHandler() const;
+	HANDLE GetWinAPIConsoleInputHandler() const;
+	HANDLE GetWinAPIConsoleOutputHandler() const;
 
-	virtual COORD GetRenderStartPoint() const;
-	virtual void SetRenderStartPoint(const COORD& renderStartPoint);
+	COORD GetRenderStartPoint() const;
+	void SetRenderStartPoint(const COORD& renderStartPoint);
 
-	virtual void SetWidgetSize(const COORD& widgetSize);
-	virtual COORD GetWidgetSize() const;
+	void SetWidgetSize(const COORD& widgetSize);
+	COORD GetWidgetSize() const;
 
-	virtual void ClearWidget();
+	void ClearWidget();
 	virtual BOOL DrawWidget(const wchar_t* buffer,
 							const COORD& bufferSize);
-	virtual BOOL DisplayWidget() const;
+	BOOL DisplayWidget() const;
 
 	virtual BOOL Update() = 0;
 

@@ -162,6 +162,7 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="InputWidget.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="MessageWidget.cpp" />
     <ClCompile Include="Publisher.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="InputWidget.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="MessageWidget.h" />
     <ClInclude Include="Subscriber.h" />
     <ClInclude Include="Publisher.h" />
     <ClInclude Include="Shape.h" />

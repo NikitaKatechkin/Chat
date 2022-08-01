@@ -81,6 +81,9 @@
     <ClCompile Include="TextWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MessageWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Frame.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="ConsoleHandler.h">
       <Filter>Header Files\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageWidget.h">
+      <Filter>Header Files\Console\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -613,6 +613,7 @@ Frame CreateInputFrame(const COORD& frameSize)
 #include "EventHandler.h"
 #include "InputWidget.h"
 #include "TextWidget.h"
+#include "MessageWidget.h"
 #include "Frame.h"
 #include "BorderShape.h"
 
@@ -672,9 +673,24 @@ int main()
                                                                               COORD{0, 0},
                                                                               widgetSize);
 
-                std::shared_ptr<TextWidget> widgetMessage = std::make_shared<TextWidget>(L"NICK: HI",
-                                                                                 COORD{ 0, 10 },
+                std::shared_ptr<MessageWidget> widgetMessage = std::make_shared<MessageWidget>(COORD{ 0, 10 },
                                                                                  widgetSize);
+
+                for (int i = 0; i < 6; i++)
+                {
+                    widgetMessage->PrintMessage(L"Nick: Hi");
+                }
+
+                //widgetMessage->MoveBufferOneLineAbove();
+                widgetMessage->PrintMessage(L"John: Hi");
+                widgetMessage->PrintMessage(L"John: Hi");
+
+                
+                for (int i = 0; i < 3; i++)
+                {
+                    widgetMessage->PrintMessage(L"Jane: Hi");
+                }
+                
 
                 std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(COORD{ 0, 20 }, 
                                                                                          widgetSize);

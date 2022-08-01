@@ -5,6 +5,7 @@ c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\textwidget.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\source.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\shape.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\publisher.obj
+c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\messagewidget.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\logger.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\inputwidget.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\frame.obj
@@ -12,8 +13,8 @@ c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\eventhandler.ob
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\consolehandler.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\consoleeventhandler.obj
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\bordershape.obj
-c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\chatclient.ilk
 c:\users\nikita.katechkin\source\repos\chat\x64\debug\chatclient.exe
+c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\chatclient.ilk
 c:\users\nikita.katechkin\source\repos\chat\x64\debug\chatclient.pdb
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\chatclient.tlog\cl.command.1.tlog
 c:\users\nikita.katechkin\source\repos\chat\chatclient\x64\debug\chatclient.tlog\cl.read.1.tlog
