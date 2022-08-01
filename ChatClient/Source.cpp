@@ -609,6 +609,7 @@ Frame CreateInputFrame(const COORD& frameSize)
 }
 **/
 
+/**
 #include "Widget.h"
 #include "EventHandler.h"
 #include "InputWidget.h"
@@ -654,20 +655,6 @@ int main()
                 std::shared_ptr<EventHandler> eventHandler = std::make_shared<EventHandler>(std_in, std_out);
 
                 eventHandler->StartEventHandling();
-
-                /**
-                std::shared_ptr<Widget> widgetInfo = std::make_shared<Widget>(CreateInfoFrame(widgetSize),
-                                                                              COORD{ 0, 0 },
-                                                                              widgetSize);
-
-                std::shared_ptr<Widget> widgetMessage = std::make_shared<Widget>(CreateMessageFrame(widgetSize),
-                                                                                 COORD{ 0, 10 }, 
-                                                                                 widgetSize);
-
-                std::shared_ptr<InputWidget> widgetInput = std::make_shared<InputWidget>(CreateInputFrame(widgetSize), 
-                                                                                         COORD{ 0, 20 }, 
-                                                                                         widgetSize);
-                **/
 
                 std::shared_ptr<TextWidget> widgetInfo = std::make_shared<TextWidget>(L"CHAT ROOM IP =", 
                                                                               COORD{0, 0},
@@ -808,4 +795,10 @@ Frame CreateInputFrame(const COORD& frameSize)
         COORD{ 1, 1 });
 
     return frame;
+}
+**/
+
+int main()
+{
+    return 0;
 }
