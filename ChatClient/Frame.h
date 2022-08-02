@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <algorithm>
+#include <sstream>
 
 class Frame
 {

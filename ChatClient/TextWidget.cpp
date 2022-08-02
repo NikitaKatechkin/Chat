@@ -11,7 +11,7 @@ TextWidget::TextWidget(const std::wstring& textToPrint,
 
     PrintText(textToPrint);
 
-    DisplayWidget();
+    //DisplayWidget();
 }
 
 TextWidget::TextWidget(const Frame& widgetFrame, 

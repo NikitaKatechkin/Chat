@@ -34,7 +34,7 @@ Widget::Widget(const COORD& renderStartPoint,
                                                     m_widgetFrame.GetFrameSize());
 
         DrawWidget(border->GetBuffer(), border->GetSize());
-        DisplayWidget();
+        //DisplayWidget();
     }
 }
 
@@ -73,7 +73,16 @@ Widget::Widget(const Frame& widgetFrame,
         (ownWidgetFrameSize.Y == newWidgetFrameSize.Y))
     {
         DrawWidget(widgetFrame.GetFrameBuffer(), widgetFrame.GetFrameSize());
-        DisplayWidget();
+        //DisplayWidget();
+    }
+    else
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Provided frame has size that differs from provided ";
+        errorMessage << "widget size." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
     }
 }
 

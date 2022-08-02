@@ -20,9 +20,9 @@ public:
 	EventHandler(const HANDLE& eventSource, 
 				 const HANDLE& outputEventSource);
 
-	virtual ~EventHandler() = default;
+	virtual ~EventHandler();
 	
-public:
+protected:
 	void CatchEvent(const DWORD inputBufferSize = 12);
 	void ProcessEvent();
 

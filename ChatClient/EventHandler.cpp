@@ -5,7 +5,31 @@ EventHandler::EventHandler(const HANDLE& eventSource,
 	m_eventSource(eventSource), 
     m_outputEventSource(outputEventSource)
 {
-    
+    if (m_eventSource == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Invalid event source provided." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+
+    if (m_outputEventSource == INVALID_HANDLE_VALUE)
+    {
+        std::stringstream errorMessage;
+
+        errorMessage << "Invalid output of event source provided." << std::endl;
+
+        throw std::exception(errorMessage.str().c_str());
+    }
+}
+
+EventHandler::~EventHandler()
+{
+    if (m_isEventHandlingStarted == true)
+    {
+        StopEventHandling();
+    }
 }
 
 void EventHandler::CatchEvent(const DWORD inputBufferSize)
@@ -53,12 +77,36 @@ void EventHandler::ServiceStartEventHandling()
 
 void EventHandler::StartEventHandling()
 {
-    m_eventHandlingThread = std::thread(&EventHandler::ServiceStartEventHandling, 
-                                        this);
+    if (m_isEventHandlingStarted == false)
+    {
+        //std::cout << "Starting" << std::endl;
+
+        m_eventHandlingThread = std::thread(&EventHandler::ServiceStartEventHandling,
+                                            this);
+    }
 }
 
 void EventHandler::StopEventHandling()
 {
-    m_isEventHandlingStarted = false;
-    m_eventHandlingThread.join();
+    if (m_isEventHandlingStarted == true)
+    {
+        m_isEventHandlingStarted = false;
+
+        /**
+        {
+            COORD consoleSize = COORD{ 80, 30 };
+            SMALL_RECT windowSize = { 0,
+                                      0,
+                                      consoleSize.X - 1,
+                                      consoleSize.Y - 1 };
+
+            SetConsoleWindowInfo(m_outputEventSource, TRUE, &windowSize);
+            SetConsoleScreenBufferSize(m_outputEventSource, consoleSize);
+        }
+        **/
+
+        //std::cout << "Stopping" << std::endl;
+
+        m_eventHandlingThread.join();
+    }
 }

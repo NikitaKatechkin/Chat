@@ -1,10 +1,20 @@
 #include "Frame.h"
 
 Frame::Frame(const COORD& frameSize):
-	m_size(frameSize), 
-	m_frame(new wchar_t[frameSize.X * frameSize.Y]), 
+	m_size(frameSize),
 	m_frameCharLength(frameSize.X* frameSize.Y)
 {
+	if (frameSize.X <= 0 || frameSize.Y <= 0)
+	{
+		std::stringstream errorMessage;
+
+		errorMessage << "Non positive size was provided.";
+
+		throw std::exception(errorMessage.str().c_str());
+	}
+
+	m_frame = new wchar_t[m_frameCharLength];
+
 	ClearFrame();
 }
 
@@ -60,6 +70,11 @@ DWORD Frame::GetFrameCharLength() const
 
 void Frame::SetFrameSize(const COORD& frameSize)
 {
+	if (frameSize.X <= 0 || frameSize.Y <= 0)
+	{
+		return;
+	}
+
 	m_size = frameSize;
 	m_frameCharLength = m_size.X * m_size.Y;
 
