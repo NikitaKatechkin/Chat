@@ -11,6 +11,11 @@
 
 #include <memory>
 
+Frame CreateMainScreen(const COORD& frameSize);
+Frame CreateInfoFrame(const COORD& frameSize);
+Frame CreateMessageFrame(const COORD& frameSize);
+Frame CreateInputFrame(const COORD& frameSize);
+
 const COORD emptyFrameSize = COORD{ 0, 0 };
 const COORD validFrameSize = COORD{ 10, 10 };
 
@@ -100,22 +105,273 @@ TEST(TextWidgetTestCase, CreationTest)
     //delete widget;
 }
 
+TEST(TextWidgetTestCase, GetHandlesTest)
+{
+    TextWidget widget;
+
+    EXPECT_EQ(widget.GetWinAPIConsoleInputHandler(), GetStdHandle(STD_INPUT_HANDLE));
+    EXPECT_EQ(widget.GetWinAPIConsoleOutputHandler(), GetStdHandle(STD_OUTPUT_HANDLE));
+}
+
+TEST(TextWidgetTestCase, SetGetRenderStartPointTest)
+{
+    TextWidget widget;
+
+    const COORD renderStartPoint = COORD{ 25, 25 };
+    widget.SetRenderStartPoint(renderStartPoint);
+
+    EXPECT_EQ(renderStartPoint, widget.GetRenderStartPoint());
+}
+
+TEST(TextWidgetTestCase, SetGetWidgetSizeTest)
+{
+    TextWidget widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    widget.SetWidgetSize(widgetSize);
+
+    EXPECT_EQ(widgetSize, widget.GetWidgetSize());
+}
+
+TEST(TextWidgetTestCase, ClearWidgetTest)
+{
+    TextWidget* widget = new TextWidget();
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    widget = new TextWidget(CreateInfoFrame(widgetSize),
+                            renderStartPoint,
+                            widgetSize);
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+}
+
+TEST(TextWidgetTestCase, DrawWidgetTest)
+{
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    const COORD invalidFrameSize = COORD{ 1 , 1 };
+    const wchar_t* invalidFrameBuffer = nullptr;
+
+    const COORD validFrameSize = COORD{ 25, 25 };
+    const Frame validFrame(validFrameSize);
+
+    TextWidget widget(L"", renderStartPoint, validFrameSize);
+
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, validFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), validFrameSize), TRUE);
+}
+
+TEST(TextWidgetTestCase, PrintTextTest)
+{
+    TextWidget widget;
+
+    EXPECT_NO_THROW(widget.PrintText(L""));
+    EXPECT_NO_THROW(widget.PrintText(L"rgwregareg"));
+}
 
 //---------------------------------------------------------------
 
-Frame CreateMainScreen(const COORD& frameSize);
-Frame CreateInfoFrame(const COORD& frameSize);
-Frame CreateMessageFrame(const COORD& frameSize);
-Frame CreateInputFrame(const COORD& frameSize);
+TEST(MessageWidgetTestCase, CreationTest)
+{
+    const COORD renderPoint{ 0, 0 };
+    const COORD widgetSize{ 80, 30 };
+    const Frame validFrame(widgetSize);
+
+    MessageWidget* widget = nullptr;
+
+    EXPECT_NO_THROW(widget = new MessageWidget(validFrame, renderPoint, widgetSize));
+    delete widget;
+
+    EXPECT_NO_THROW(widget = new MessageWidget());
+    delete widget;
+
+    const COORD newWidgetSize{ widgetSize.X + 1, widgetSize.Y + 1 };
+    EXPECT_ANY_THROW(widget = new MessageWidget(validFrame,
+        renderPoint,
+        newWidgetSize));
+    //delete widget;
+}
+
+TEST(MessageWidgetTestCase, GetHandlesTest)
+{
+    MessageWidget widget;
+
+    EXPECT_EQ(widget.GetWinAPIConsoleInputHandler(), GetStdHandle(STD_INPUT_HANDLE));
+    EXPECT_EQ(widget.GetWinAPIConsoleOutputHandler(), GetStdHandle(STD_OUTPUT_HANDLE));
+}
+
+TEST(MessageWidgetTestCase, SetGetRenderStartPointTest)
+{
+    MessageWidget widget;
+
+    const COORD renderStartPoint = COORD{ 25, 25 };
+    widget.SetRenderStartPoint(renderStartPoint);
+
+    EXPECT_EQ(renderStartPoint, widget.GetRenderStartPoint());
+}
+
+TEST(MessageWidgetTestCase, SetGetWidgetSizeTest)
+{
+    MessageWidget widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    widget.SetWidgetSize(widgetSize);
+
+    EXPECT_EQ(widgetSize, widget.GetWidgetSize());
+}
+
+TEST(MessageWidgetTestCase, ClearWidgetTest)
+{
+    MessageWidget* widget = new MessageWidget();
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    widget = new MessageWidget(CreateInfoFrame(widgetSize),
+        renderStartPoint,
+        widgetSize);
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+}
+
+TEST(MessageWidgetTestCase, DrawWidgetTest)
+{
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    const COORD invalidFrameSize = COORD{ 1 , 1 };
+    const wchar_t* invalidFrameBuffer = nullptr;
+
+    const COORD validFrameSize = COORD{ 25, 25 };
+    const Frame validFrame(validFrameSize);
+
+    MessageWidget widget(renderStartPoint, validFrameSize);
+
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, validFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), validFrameSize), TRUE);
+}
+
+TEST(MessageWidgetTestCase, PrintTextTest)
+{
+    const std::wstring message = L"hbrealihguilhaeruihg";
+
+    MessageWidget widget;
+
+    for (size_t i = 0; i < widget.GetWidgetSize().Y * 2; i++)
+    {
+        EXPECT_NO_THROW(widget.PrintMessage(message));
+    }
+}
+//---------------------------------------------------------------
+
+TEST(InputWidgetTestCase, CreationTest)
+{
+    const COORD renderPoint{ 0, 0 };
+    const COORD widgetSize{ 80, 30 };
+    const Frame validFrame(widgetSize);
+
+    InputWidget* widget = nullptr;
+
+    EXPECT_NO_THROW(widget = new InputWidget(validFrame, renderPoint, widgetSize));
+    delete widget;
+
+    EXPECT_NO_THROW(widget = new InputWidget());
+    delete widget;
+
+    const COORD newWidgetSize{ widgetSize.X + 1, widgetSize.Y + 1 };
+    EXPECT_ANY_THROW(widget = new InputWidget(validFrame,
+        renderPoint,
+        newWidgetSize));
+    //delete widget;
+}
+
+TEST(InputWidgetTestCase, GetHandlesTest)
+{
+    InputWidget widget;
+
+    EXPECT_EQ(widget.GetWinAPIConsoleInputHandler(), GetStdHandle(STD_INPUT_HANDLE));
+    EXPECT_EQ(widget.GetWinAPIConsoleOutputHandler(), GetStdHandle(STD_OUTPUT_HANDLE));
+}
+
+TEST(InputWidgetTestCase, SetGetRenderStartPointTest)
+{
+    InputWidget widget;
+
+    const COORD renderStartPoint = COORD{ 25, 25 };
+    widget.SetRenderStartPoint(renderStartPoint);
+
+    EXPECT_EQ(renderStartPoint, widget.GetRenderStartPoint());
+}
+
+TEST(InputWidgetTestCase, SetGetWidgetSizeTest)
+{
+    InputWidget widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    widget.SetWidgetSize(widgetSize);
+
+    EXPECT_EQ(widgetSize, widget.GetWidgetSize());
+}
+
+TEST(InputWidgetTestCase, ClearWidgetTest)
+{
+    InputWidget* widget = new InputWidget();
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+
+    const COORD widgetSize = COORD{ 25, 25 };
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    widget = new InputWidget(CreateInfoFrame(widgetSize),
+        renderStartPoint,
+        widgetSize);
+    EXPECT_NO_THROW(widget->ClearWidget());
+
+    delete widget;
+}
+
+TEST(InputWidgetTestCase, DrawWidgetTest)
+{
+    const COORD renderStartPoint = COORD{ 0, 0 };
+
+    const COORD invalidFrameSize = COORD{ 1 , 1 };
+    const wchar_t* invalidFrameBuffer = nullptr;
+
+    const COORD validFrameSize = COORD{ 25, 25 };
+    const Frame validFrame(validFrameSize);
+
+    InputWidget widget(renderStartPoint, validFrameSize);
+
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(invalidFrameBuffer, validFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), invalidFrameSize), FALSE);
+    EXPECT_EQ(widget.DrawWidget(validFrame.GetFrameBuffer(), validFrameSize), TRUE);
+}
+
+//---------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
-    /**
+    ///**
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
-    **/
+    //**/
 
-    ///**
+    /**
     int exit_code = 0;
 
     HANDLE std_in = GetStdHandle(STD_INPUT_HANDLE);
@@ -209,7 +465,7 @@ int main(int argc, char** argv)
     }
 
     return exit_code;
-    //**/
+    **/
 }
 
 Frame CreateMainScreen(const COORD& frameSize)

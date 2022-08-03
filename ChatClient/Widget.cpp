@@ -125,6 +125,11 @@ void Widget::ClearWidget()
 
 BOOL Widget::DrawWidget(const wchar_t* buffer, const COORD& bufferSize)
 {
+    if ((buffer == nullptr) || (bufferSize.X <= 0) || (bufferSize.Y <= 0))
+    {
+        return FALSE;
+    }
+
     size_t selfScreenBufferBytesSize = m_widgetFrame.GetFrameCharLength() * sizeof(wchar_t);
     size_t newScreenBufferBytesSize = bufferSize.X * bufferSize.Y * sizeof(wchar_t);
 
